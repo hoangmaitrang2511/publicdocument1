@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw — User Research 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Surface */
+  --bg:      #f0f2f8;
+  --bg2:     #ffffff;
+  --bg3:     #f5f6fb;
+  --bg4:     #eaecf5;
+
+  /* Borders */
+  --border:  rgba(100,100,160,.10);
+  --border2: rgba(100,100,160,.18);
+
+  /* Text */
+  --ink:     #1a1836;
+  --ink2:    #4a4870;
+  --ink3:    #9898b8;
+
+  /* Brand palette — soft purple/blue like reference */
+  --blue:    #5b7fee;
+  --violet:  #8b72e8;
+  --teal:    #4dbfb0;
+  --amber:   #f5a623;
+  --coral:   #f07060;
+  --green:   #5abf8a;
+  --pink:    #e08ab8;
+  --lavender:#b8b0f0;
+
+  /* Pastel fills */
+  --fill-blue:   #dde8ff;
+  --fill-violet: #e8e2ff;
+  --fill-teal:   #d8f5f0;
+  --fill-amber:  #fff0d0;
+  --fill-coral:  #ffe4e0;
+  --fill-green:  #d8f5e8;
+  --fill-pink:   #ffe0f0;
+
+  --r:  12px;
+  --rl: 18px;
+  --shadow: 0 2px 12px rgba(80,80,160,.08);
+  --shadow-md: 0 4px 24px rgba(80,80,160,.12);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+.header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: stretch;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(80,80,160,.05);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 28px;
+  border-right: 1px solid var(--border);
+}
+.claw { font-size: 24px; }
+.brand { font-weight: 800; font-size: 15px; letter-spacing: -.02em; color: var(--ink); }
+.brand-sub { font-size: 10px; color: var(--ink3); letter-spacing: .06em; text-transform: uppercase; margin-top: 1px; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  overflow-x: auto;
+  gap: 0;
+}
+.tabs::-webkit-scrollbar { height: 0; }
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 20px;
+  height: 48px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink3);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .18s;
+}
+.tab:hover { color: var(--ink2); }
+.tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+.tab-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── LAYOUT ── */
+.page { display: none; }
+.page.active { display: block; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 36px 40px 80px; }
+
+/* ── SECTION LABEL ── */
+.slabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 16px;
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.slabel::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+.slabel:first-child { margin-top: 0; }
+
+/* ── METRIC CARDS ── */
+.metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 6px; }
+.mcard {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--rl);
+  padding: 22px 22px 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.mcard::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--rl) var(--rl) 0 0;
+}
+.mcard.c-blue::after   { background: linear-gradient(90deg,#5b7fee,#8b72e8); }
+.mcard.c-teal::after   { background: linear-gradient(90deg,#4dbfb0,#5abf8a); }
+.mcard.c-coral::after  { background: linear-gradient(90deg,#f07060,#f5a623); }
+.mcard.c-amber::after  { background: linear-gradient(90deg,#f5a623,#f07060); }
+.mcard.c-violet::after { background: linear-gradient(90deg,#8b72e8,#b8b0f0); }
+.mcard.c-green::after  { background: linear-gradient(90deg,#5abf8a,#4dbfb0); }
+.mcard.c-pink::after   { background: linear-gradient(90deg,#e08ab8,#8b72e8); }
+.m-label { font-size: 11px; color: var(--ink3); margin-bottom: 10px; letter-spacing: .02em; }
+.m-val {
+  font-size: 30px; font-weight: 800; color: var(--ink); line-height: 1;
+  letter-spacing: -.02em;
+}
+.m-sub { font-size: 11px; color: var(--ink3); margin-top: 7px; line-height: 1.4; }
+
+/* ── GRID ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 16px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 16px; }
+
+/* ── CARD ── */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--rl);
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+}
+.card-h {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink2);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ch-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── HORIZONTAL BARS — reference style ── */
+.hbar { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+.hbar:last-child { margin-bottom: 0; }
+.hbar-lbl { font-size: 12px; color: var(--ink2); flex-shrink: 0; width: 195px; line-height: 1.3; }
+.hbar-lbl.w140 { width: 140px; }
+.hbar-lbl.w160 { width: 165px; }
+.hbar-track {
+  flex: 1; height: 10px;
+  background: var(--bg4);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.hbar-fill { height: 100%; border-radius: 99px; }
+.hbar-pct { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); width: 38px; text-align: right; flex-shrink: 0; }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 10px; font-weight: 600;
+  padding: 3px 10px; border-radius: 99px;
+  letter-spacing: .02em; white-space: nowrap;
+}
+.bd-blue   { background: var(--fill-blue);   color: #3050c0; }
+.bd-teal   { background: var(--fill-teal);   color: #1a8070; }
+.bd-coral  { background: var(--fill-coral);  color: #c03020; }
+.bd-amber  { background: var(--fill-amber);  color: #906000; }
+.bd-violet { background: var(--fill-violet); color: #5030b0; }
+.bd-green  { background: var(--fill-green);  color: #1a7040; }
+.bd-pink   { background: var(--fill-pink);   color: #902060; }
+.bd-gray   { background: var(--bg4);         color: var(--ink2); }
+
+/* ── QUOTE ── */
+.qblock {
+  background: var(--bg3);
+  border-radius: var(--r);
+  padding: 13px 15px;
+  margin-bottom: 9px;
+  border-left: 3px solid transparent;
+}
+.qblock:last-child { margin-bottom: 0; }
+.q-text { font-size: 12.5px; color: var(--ink); line-height: 1.6; font-style: italic; }
+.q-meta { font-size: 10px; color: var(--ink3); margin-top: 5px; font-family: 'JetBrains Mono', monospace; }
+
+/* ── PAIN ROW ── */
+.prow { display: flex; gap: 13px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.prow:last-child { border-bottom: none; padding-bottom: 0; }
+.picon {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.p-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.p-desc { font-size: 12px; color: var(--ink2); line-height: 1.55; }
+
+/* ── USE CASE TILE ── */
+.uc-tile {
+  background: var(--bg3);
+  border-radius: var(--r);
+  padding: 14px 15px;
+  border: 1px solid var(--border);
+}
+.uc-title { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-bottom: 5px; }
+.uc-desc { font-size: 11.5px; color: var(--ink2); line-height: 1.55; }
+.uc-who { font-size: 10px; color: var(--ink3); font-family: 'JetBrains Mono', monospace; margin-top: 6px; }
+
+/* ── TABLE ── */
+.dtable { width: 100%; border-collapse: collapse; }
+.dtable th {
+  font-size: 10px; font-weight: 600; color: var(--ink3);
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 9px 13px; border-bottom: 1px solid var(--border2); text-align: left;
+  background: var(--bg3);
+}
+.dtable td {
+  padding: 11px 13px; border-bottom: 1px solid var(--border);
+  font-size: 12px; color: var(--ink2); vertical-align: top; line-height: 1.45;
+}
+.dtable tr:last-child td { border-bottom: none; }
+.dtable tr:hover td { background: var(--bg3); }
+.dtable td:first-child { color: var(--ink); font-weight: 600; font-size: 12.5px; }
+
+/* ── HERO / OVERVIEW ── */
+.ov-hero {
+  background: linear-gradient(135deg, #e8eeff 0%, #ede8ff 45%, #e0f5f0 100%);
+  border: 1px solid rgba(120,120,220,.15);
+  border-radius: var(--rl);
+  padding: 40px 44px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.ov-hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(139,114,232,.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.ov-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 30%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(77,191,176,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.ov-title {
+  font-size: 34px; font-weight: 800; color: var(--ink);
+  line-height: 1.1; letter-spacing: -.03em; margin-bottom: 12px;
+}
+.ov-subtitle { font-size: 14px; color: var(--ink2); max-width: 560px; line-height: 1.7; }
+.ov-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.ov-tags .badge { background: rgba(255,255,255,.7); color: var(--ink2); border: 1px solid rgba(120,120,220,.2); }
+
+/* ── SOURCES ── */
+.source-list { display: flex; flex-direction: column; gap: 10px; }
+.src-row {
+  display: flex; align-items: center; gap: 13px;
+  background: var(--bg3); border-radius: var(--r); padding: 12px 15px;
+  border: 1px solid var(--border);
+  transition: background .15s;
+}
+.src-row:hover { background: var(--bg4); }
+.src-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.src-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.src-meta { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+.src-count { margin-left: auto; }
+
+/* ── KEY FINDINGS ── */
+.key-finding {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 15px 17px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: box-shadow .15s;
+}
+.key-finding:hover { box-shadow: var(--shadow); }
+.kf-num {
+  font-size: 24px; font-weight: 800; line-height: 1;
+  flex-shrink: 0; width: 38px;
+}
+.kf-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.kf-text { font-size: 12px; color: var(--ink2); line-height: 1.55; }
+
+/* ── TAGS ── */
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { padding: 5px 14px; border-radius: 99px; font-size: 11.5px; font-weight: 500; cursor: default; }
+
+/* ── DONUT ── */
+.donut-wrap { position: relative; height: 210px; margin-bottom: 16px; }
+
+/* ── SENTIMENT BARS ── */
+.sent-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.sent-lbl { font-size: 12px; color: var(--ink2); width: 145px; flex-shrink: 0; }
+.sent-track { flex: 1; height: 10px; background: var(--bg4); border-radius: 99px; overflow: hidden; display: flex; }
+.sent-pct { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); width: 34px; text-align: right; flex-shrink: 0; }
+
+/* ── INS ROW ── */
+.ins-row { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.ins-row:last-child { border-bottom: none; }
+.ins-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.ins-text { font-size: 12px; color: var(--ink2); line-height: 1.55; }
+.ins-text strong { color: var(--ink); }
+
+/* ── FOOTNOTE ── */
+.footnote {
+  margin-top: 36px;
+  padding: 13px 17px;
+  background: var(--bg3);
+  border-radius: var(--r);
+  border-left: 3px solid var(--teal);
+  font-size: 11px;
+  color: var(--ink3);
+  line-height: 1.7;
+}
+.footnote strong { color: var(--ink2); }
+
+/* ── TOPIC SECTIONS ── */
+.topic-section { margin-bottom: 16px; }
+.ts-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 17px;
+  background: linear-gradient(135deg, var(--fill-blue) 0%, var(--fill-violet) 100%);
+  border: 1px solid rgba(120,120,220,.15);
+  border-radius: var(--r) var(--r) 0 0;
+  border-bottom: none;
+}
+.ts-icon { font-size: 18px; }
+.ts-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+.ts-badge { margin-left: auto; }
+.ts-body {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  border: 1px solid rgba(120,120,220,.15);
+  border-radius: 0 0 var(--r) var(--r); overflow: hidden;
+  background: #fff;
+}
+.ts-cell { padding: 15px 17px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.ts-cell:nth-child(3n) { border-right: none; }
+.ts-cell:nth-last-child(-n+3) { border-bottom: none; }
+.ts-cell-title { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-bottom: 5px; }
+.ts-cell-text { font-size: 11.5px; color: var(--ink2); line-height: 1.55; }
+.ts-cell-who { font-size: 10px; color: var(--ink3); font-family: 'JetBrains Mono', monospace; margin-top: 6px; }
+
+/* ── ERROR TABLE ── */
+.err-table { width: 100%; border-collapse: collapse; }
+.err-table th { font-size: 10px; font-weight: 600; color: var(--ink3); letter-spacing: .08em; text-transform: uppercase; padding: 9px 13px; border-bottom: 1px solid var(--border2); text-align: left; background: var(--bg3); }
+.err-table td { padding: 11px 13px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--ink2); }
+.err-table tr:last-child td { border-bottom: none; }
+.err-table tr:hover td { background: var(--bg3); }
+.err-table td:first-child { color: var(--ink); font-weight: 600; }
+
+/* ── PROFILE CARDS ── */
+.profile { background: var(--bg3); border-radius: var(--r); padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 8px; }
+.profile-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.profile-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.profile-text { font-size: 12px; color: var(--ink2); line-height: 1.55; }
+
+/* ── UC TILES ── */
+.uc-tile { background: var(--bg3); border-radius: var(--r); padding: 14px 15px; border: 1px solid var(--border); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--lavender); border-radius: 99px; }
+
+/* ── CAL3 TABLE ── */
+.cal3-table { border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; background: #fff; box-shadow: var(--shadow); }
+.cal3-header { display: grid; grid-template-columns: 100px 1fr 320px; background: linear-gradient(135deg,var(--fill-violet),var(--fill-blue)); color: var(--ink2); font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 10px 0; }
+.cal3-header > div { padding: 0 16px; }
+.cal3-row { display: grid; grid-template-columns: 100px 1fr 320px; border-bottom: 1px solid var(--border); transition: background .12s; }
+.cal3-row:last-child { border-bottom: none; }
+.cal3-row:hover { background: var(--bg3); }
+.cal3-date { padding: 16px 14px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: var(--bg3); gap: 2px; }
+.c3-dow { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ink3); letter-spacing: .06em; text-transform: uppercase; }
+.c3-num { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--ink); line-height: 1.1; }
+.cal3-content { padding: 14px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; }
+.c3-ama-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .06em; }
+.c3-pillar { font-size: 10px; font-weight: 600; color: var(--ink3); text-transform: uppercase; letter-spacing: .04em; }
+.c3-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 4px; }
+.c3-post { font-size: 11.5px; color: var(--ink2); line-height: 1.65; background: var(--bg3); border-radius: 8px; padding: 10px 13px; white-space: pre-line; border-left: 2px solid var(--lavender); word-break: break-word; }
+.cal3-reason { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.c3-reason-title { font-size: 12px; font-weight: 700; color: var(--ink); line-height: 1.4; }
+.c3-bullets { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.c3-bullets li { font-size: 11px; color: var(--ink2); line-height: 1.55; padding-left: 13px; position: relative; }
+.c3-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--ink3); font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+.c3-eng { display: flex; align-items: center; gap: 7px; margin-top: 4px; }
+.c3-kpi { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); }
+
+/* ── ENG BADGES ── */
+.eng-badge { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; padding: 2px 9px; border-radius: 99px; letter-spacing: .04em; }
+.eng-h { background: var(--fill-coral); color: #c03020; }
+.eng-m { background: var(--fill-amber); color: #906000; }
+.eng-g { background: var(--fill-green); color: #1a7040; }
+
+/* ── TOPIC PILLAR TAGS (calendar) ── */
+.ct-pillar-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 600; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 99px; letter-spacing: .03em; margin-top: 6px; }
+.ct-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <span class="claw">🦞</span>
+    <div>
+      <div class="brand">OpenClaw Research</div>
+      <div class="brand-sub">User Psychology · May 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="go(0)">
+    <span class="tab-dot" style="background:var(--blue)"></span> Overview
+  </button>
+  <button class="tab" onclick="go(1)">
+    <span class="tab-dot" style="background:var(--violet)"></span> Nghiên cứu toàn cầu
+  </button>
+  <button class="tab" onclick="go(2)">
+    <span class="tab-dot" style="background:var(--teal)"></span> Insight Group OpenClaw VN
+  </button>
+  <button class="tab" onclick="go(3)">
+    <span class="tab-dot" style="background:var(--coral)"></span> Reddit — Use Cases thực tế
+  </button>
+  <button class="tab" onclick="go(4)">
+    <span class="tab-dot" style="background:var(--amber)"></span> Top Posts FB Group VN
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 0 — OVERVIEW
+════════════════════════════════════════════════════ -->
+<div class="page active" id="p0">
+<div class="wrap">
+
+  <div class="ov-hero">
+    <div class="ov-title">Người dùng OpenClaw<br>thực sự cần gì?</div>
+    <div class="ov-subtitle">Tổng hợp từ 3 nguồn: nghiên cứu toàn cầu (Reddit/GitHub/báo chí), AMA Group Facebook VN, và 145 comments từ post viral r/openclaw — tháng 5/2026.</div>
+    <div class="ov-tags">
+      <span class="badge bd-blue">355K+ GitHub Stars</span>
+      <span class="badge bd-teal">3.2M người dùng</span>
+      <span class="badge bd-violet">81K+ Issues</span>
+      <span class="badge bd-amber">145 Reddit comments phân tích</span>
+      <span class="badge bd-coral">100+ FB AMA comments</span>
+      <span class="badge bd-green">Tháng 5 / 2026</span>
+    </div>
+  </div>
+
+  <div class="g2">
+    <!-- Sources -->
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--blue)"></span>Nguồn dữ liệu</div>
+      <div class="source-list">
+        <div class="src-row">
+          <div class="src-icon" style="background:var(--fill-coral)">🔴</div>
+          <div><div class="src-name">Reddit r/openclaw</div><div class="src-meta">Post AMA viral "What are you actually using OpenClaw for?"</div></div>
+          <div class="src-count"><span class="badge bd-coral">145 comments</span></div>
+        </div>
+        <div class="src-row">
+          <div class="src-icon" style="background:var(--fill-teal)">👥</div>
+          <div><div class="src-name">Group Facebook OpenClaw VN</div><div class="src-meta">Google Sheets AMA — admin group cung cấp trực tiếp</div></div>
+          <div class="src-count"><span class="badge bd-teal">100+ comments</span></div>
+        </div>
+        <div class="src-row">
+          <div class="src-icon" style="background:var(--fill-blue)">🐙</div>
+          <div><div class="src-name">GitHub Issues</div><div class="src-meta">openclaw/openclaw repo — issues, FAQs, troubleshooting</div></div>
+          <div class="src-count"><span class="badge bd-blue">81K+ issues</span></div>
+        </div>
+        <div class="src-row">
+          <div class="src-icon" style="background:var(--fill-amber)">📰</div>
+          <div><div class="src-name">Báo chí & Blog VN</div><div class="src-meta">Tinhte, AnonyViet, Azdigi, CellphoneS, Tấn Phát Digital</div></div>
+          <div class="src-count"><span class="badge bd-amber">50+ bài</span></div>
+        </div>
+        <div class="src-row">
+          <div class="src-icon" style="background:var(--fill-violet)">📄</div>
+          <div><div class="src-name">Official Docs</div><div class="src-meta">docs.openclaw.ai/help/faq · openclawdatabase.com</div></div>
+          <div class="src-count"><span class="badge bd-violet">FAQ chính thức</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key numbers -->
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--teal)"></span>Số liệu nhanh</div>
+      <div class="metrics" style="grid-template-columns:1fr 1fr; gap:10px; margin-bottom:0;">
+        <div class="mcard c-blue" style="padding:14px 16px;">
+          <div class="m-label">GitHub Stars</div>
+          <div class="m-val" style="font-size:22px;">355K+</div>
+          <div class="m-sub">Kỷ lục OSS: 250K/60 ngày</div>
+        </div>
+        <div class="mcard c-teal" style="padding:14px 16px;">
+          <div class="m-label">Active users</div>
+          <div class="m-val" style="font-size:22px;">3.2M</div>
+          <div class="m-sub">500K+ instances đang chạy</div>
+        </div>
+        <div class="mcard c-coral" style="padding:14px 16px;">
+          <div class="m-label">Issues mở</div>
+          <div class="m-val" style="font-size:22px;">81K+</div>
+          <div class="m-sub">1,200+ contributors</div>
+        </div>
+        <div class="mcard c-amber" style="padding:14px 16px;">
+          <div class="m-label">Community skills</div>
+          <div class="m-val" style="font-size:22px;">13,700+</div>
+          <div class="m-sub">53 skills chính thức</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">Key findings — 5 insight xuyên suốt cả 3 nguồn</div>
+  <div class="g2">
+    <div>
+      <div class="key-finding">
+        <div class="kf-num" style="color:var(--blue)">01</div>
+        <div><div class="kf-title">Chi phí là nỗi đau số 1 tại VN</div><div class="kf-text">88% câu hỏi trong AMA VN liên quan đến cost, API key, giảm bill. Người dùng tự tìm workaround: OAuth ChatGPT Plus, Kimi/DeepSeek miễn phí, giới hạn $1/ngày qua API key settings.</div></div>
+      </div>
+      <div class="key-finding">
+        <div class="kf-num" style="color:var(--teal)">02</div>
+        <div><div class="kf-title">"Intern không phải CEO" — mindset quyết định</div><div class="kf-text">Người thành công frame OC như intern xử lý việc lặp đi lặp lại. Người thất bại kỳ vọng full autonomy → tốn $15/ngày, gần bị đuổi nhà, "làm culi cho nó".</div></div>
+      </div>
+      <div class="key-finding">
+        <div class="kf-num" style="color:var(--amber)">03</div>
+        <div><div class="kf-title">Cron job = ổn định. Judgment = fail</div><div class="kf-text">Task có trigger rõ + output check được → chạy tốt. Task cần AI "phán xét" giữa chừng → confident wrong output. "The only things that genuinely work are basically tasks that could be cron jobs."</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="key-finding">
+        <div class="kf-num" style="color:var(--coral)">04</div>
+        <div><div class="kf-title">Gap kỳ vọng vs thực tế là vấn đề lớn nhất</div><div class="kf-text">Non-tech user bỏ cuộc ở bước CLI onboarding (30%). "Tôm gian dối" — bot hứa làm xong nhưng silent fail là lỗi gây bực nhất. Gap experience giữa dev giỏi và newbie rất lớn.</div></div>
+      </div>
+      <div class="key-finding">
+        <div class="kf-num" style="color:var(--violet)">05</div>
+        <div><div class="kf-title">Context persistence là differentiator thực sự</div><div class="kf-text">"Main reason: they don't forget. Other coding assistants are project-level only — OpenClaw maintains context." Use case mạnh nhất: task kéo dài nhiều tuần, project tracking, multi-step workflows.</div></div>
+      </div>
+      <div class="key-finding">
+        <div class="kf-num" style="color:var(--green)">06</div>
+        <div><div class="kf-title">Telegram là kênh số 1 cho người dùng VN & global</div><div class="kf-text">78% Reddit users dùng Telegram. Tại VN: Zalo là kênh đặc thù được hỗ trợ riêng. Mobile workflow "code từ ngoài đường" qua Telegram là use case killer giữ chân người dùng.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">🇻🇳 VN vs 🌍 Global — Những khác biệt quan trọng cần biết</div>
+  <div class="card" style="margin-bottom:16px;border-left:3px solid var(--teal);">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+      <div style="padding-right:20px;border-right:1px solid var(--border);">
+        <div class="card-h" style="margin-bottom:14px;"><span class="ch-dot" style="background:var(--teal)"></span>🇻🇳 Đặc thù thị trường Việt Nam</div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Kênh #1: Zalo, không phải Telegram.</strong> Data thực: 5 top posts về Zalo vs 3 về Telegram. Avg engagement gần ngang nhau (~13K views). Zalo là nền tảng nhắn tin số 1 VN (74M người dùng) — điều không tồn tại ở bất kỳ thị trường nào khác.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Chi phí là ưu tiên tuyệt đối.</strong> 88% câu hỏi FB AMA xoay quanh cost — cao hơn hẳn so với Reddit global (~65%). Người dùng VN nhạy cảm giá hơn, tìm free tier & workaround nhiều hơn.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Tool ecosystem tự build.</strong> 9router, 9remote, Zalo-mod plugin, Skill Thuế TNCN — cộng đồng VN không chỉ dùng mà tự build tools để giải quyết pain point địa phương. Global community không có pattern này mạnh như VN.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Use case hành chính & kế toán.</strong> Văn bản nhà nước, Thông tư/Nghị định, thuế TNCN, hóa đơn nhập kho, đa sàn TMĐT — các use case này chỉ tồn tại ở VN, không thấy trong Reddit hay GitHub Issues toàn cầu.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Facebook Group là trung tâm cộng đồng.</strong> 150K thành viên trên FB Group — trong khi global community tập trung ở Reddit & Discord. FB là nơi thảo luận chính của người dùng VN, không phải Reddit.</div></div>
+        <div class="ins-row" style="border-bottom:none;"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Độ nhạy cảm với API key lậu cao.</strong> Nhiều bài về "acc ChatGPT giá rẻ", "token rẻ" — phản ánh văn hóa mua bán acc chia sẻ. "Thị trường hỗn loạn" khi có đợt quét tài khoản vi phạm.</div></div>
+      </div>
+      <div style="padding-left:20px;">
+        <div class="card-h" style="margin-bottom:14px;"><span class="ch-dot" style="background:var(--violet)"></span>🌍 Xu hướng Global (Reddit, GitHub)</div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Kênh #1: Telegram (78%), Discord (42%).</strong> WhatsApp #3 ở global nhưng gần như không xuất hiện trong data VN. Discord phổ biến với dev community quốc tế nhưng không phổ biến ở VN.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Security là concern hàng đầu.</strong> Reddit & GitHub Issues nói nhiều về bảo mật, port exposure, malicious skills — trong khi VN tập trung vào cost. Khác biệt về mức độ technical sophistication.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Use case Life OS phức tạp.</strong> Campsite sniper, jury duty scheduler, wearable integration, Home Assistant mega setup — những use case này đòi hỏi infrastructure phức tạp ít thấy trong community VN.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Local model (Ollama) phổ biến hơn.</strong> 30% Reddit users dùng local model — cao hơn VN do họ có phần cứng mạnh hơn và quan tâm đến privacy nhiều hơn.</div></div>
+        <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Cộng đồng trên Reddit & GitHub.</strong> Thảo luận kỹ thuật sâu hơn, nhiều open source contribution hơn, nhưng ít ecosystem tool địa phương so với VN.</div></div>
+        <div class="ins-row" style="border-bottom:none;"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Mindset "intern" được chia sẻ rộng rãi.</strong> Văn hóa chia sẻ failure stories và giới hạn của AI mạnh hơn trên Reddit. VN community nghiêng về hype hơn là honest failure analysis.</div></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">Kênh #1 VN</div>
+        <div style="font-size:18px;font-weight:700;color:var(--teal);">Zalo</div>
+        <div style="font-size:10px;color:var(--ink3);">vs Telegram (global)</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">Pain point #1 VN</div>
+        <div style="font-size:18px;font-weight:700;color:var(--coral);">Chi phí</div>
+        <div style="font-size:10px;color:var(--ink3);">vs Security (global)</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">Cộng đồng VN</div>
+        <div style="font-size:18px;font-weight:700;color:var(--amber);">FB Group</div>
+        <div style="font-size:10px;color:var(--ink3);">vs Reddit/Discord (global)</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">Use case đặc thù</div>
+        <div style="font-size:18px;font-weight:700;color:var(--green);">Hành chính</div>
+        <div style="font-size:10px;color:var(--ink3);">Thuế, kế toán, đa sàn</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">Phân khúc người dùng & Use case phổ biến nhất</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--violet)"></span>Phân khúc người dùng</div>
+      <div class="donut-wrap">
+        <canvas id="donutOv" role="img" aria-label="Phân khúc người dùng OpenClaw">Tech 38%, Dev 30%, Non-tech 22%, Business 10%</canvas>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:2px;background:#5b8dee;flex-shrink:0"></span>Tech enthusiast 38%</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:2px;background:#2aac90;flex-shrink:0"></span>Developer 30%</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:2px;background:#e09020;flex-shrink:0"></span>Non-tech 22%</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:2px;background:#d058a0;flex-shrink:0"></span>Doanh nghiệp 10%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--amber)"></span>Top use case ổn định nhất — cả 3 nguồn đồng thuận</div>
+      <table class="dtable">
+        <thead><tr><th>Use Case</th><th>Độ ổn định</th><th>Phổ biến</th></tr></thead>
+        <tbody>
+          <tr><td>Morning brief qua Telegram</td><td><span class="badge bd-green">Rất ổn</span></td><td><span class="badge bd-blue">★★★★★</span></td></tr>
+          <tr><td>Email & calendar management</td><td><span class="badge bd-green">Rất ổn</span></td><td><span class="badge bd-blue">★★★★★</span></td></tr>
+          <tr><td>Health/fitness tracking</td><td><span class="badge bd-teal">Ổn</span></td><td><span class="badge bd-blue">★★★★☆</span></td></tr>
+          <tr><td>Coding & website building</td><td><span class="badge bd-teal">Ổn</span></td><td><span class="badge bd-blue">★★★★☆</span></td></tr>
+          <tr><td>CRM & business ops</td><td><span class="badge bd-amber">Trung bình</span></td><td><span class="badge bd-blue">★★★☆☆</span></td></tr>
+          <tr><td>Social media automation</td><td><span class="badge bd-amber">Trung bình</span></td><td><span class="badge bd-blue">★★★☆☆</span></td></tr>
+          <tr><td>Finance / trading agent</td><td><span class="badge bd-coral">Rủi ro cao</span></td><td><span class="badge bd-blue">★★☆☆☆</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <strong>Phương pháp:</strong> Tổng hợp từ 3 nguồn độc lập: Reddit r/openclaw (145 comments), Facebook Group OpenClaw VN AMA (100+ comments, Google Sheets), GitHub Issues + Docs chính thức + báo chí VN. Phân tích định tính + định lượng. Cập nhật tháng 5/2026.
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 1 — GLOBAL RESEARCH
+════════════════════════════════════════════════════ -->
+<div class="page" id="p1">
+<div class="wrap">
+
+  <div class="slabel">Tổng quan cộng đồng — tháng 5/2026</div>
+  <div class="metrics">
+    <div class="mcard c-blue">
+      <div class="m-label">GitHub Stars</div>
+      <div class="m-val">355K+</div>
+      <div class="m-sub">250K trong 60 ngày — kỷ lục OSS lịch sử</div>
+    </div>
+    <div class="mcard c-teal">
+      <div class="m-label">Người dùng hoạt động</div>
+      <div class="m-val">3.2M</div>
+      <div class="m-sub">500K+ instances đang chạy globally</div>
+    </div>
+    <div class="mcard c-coral">
+      <div class="m-label">GitHub Issues</div>
+      <div class="m-val">81K+</div>
+      <div class="m-sub">~3,700 mở · 1,200+ contributors · 58K forks</div>
+    </div>
+    <div class="mcard c-amber">
+      <div class="m-label">Community Skills</div>
+      <div class="m-val">13,700+</div>
+      <div class="m-sub">53 skills chính thức được xác minh</div>
+    </div>
+  </div>
+
+  <div class="slabel">Câu hỏi phổ biến nhất theo chủ đề</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--blue)"></span>Top 10 chủ đề — toàn cầu</div>
+      <div class="hbar"><div class="hbar-lbl">Cài đặt & setup ban đầu</div><div class="hbar-track"><div class="hbar-fill" style="width:92%;background:var(--blue)"></div></div><div class="hbar-pct">92%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Bảo mật & quyền truy cập</div><div class="hbar-track"><div class="hbar-fill" style="width:78%;background:var(--violet)"></div></div><div class="hbar-pct">78%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Kết nối Telegram/WhatsApp</div><div class="hbar-track"><div class="hbar-fill" style="width:74%;background:var(--teal)"></div></div><div class="hbar-pct">74%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Chi phí & API billing</div><div class="hbar-track"><div class="hbar-fill" style="width:65%;background:var(--amber)"></div></div><div class="hbar-pct">65%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Lỗi runtime & bugs</div><div class="hbar-track"><div class="hbar-fill" style="width:61%;background:var(--coral)"></div></div><div class="hbar-pct">61%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Skills & tự động hóa</div><div class="hbar-track"><div class="hbar-fill" style="width:55%;background:var(--teal)"></div></div><div class="hbar-pct">55%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Memory & context dài hạn</div><div class="hbar-track"><div class="hbar-fill" style="width:48%;background:var(--violet)"></div></div><div class="hbar-pct">48%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Chọn AI model phù hợp</div><div class="hbar-track"><div class="hbar-fill" style="width:42%;background:var(--ink3)"></div></div><div class="hbar-pct">42%</div></div>
+      <div class="hbar"><div class="hbar-lbl">VPS vs local machine</div><div class="hbar-track"><div class="hbar-fill" style="width:38%;background:var(--green)"></div></div><div class="hbar-pct">38%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Multi-agent & sub-agents</div><div class="hbar-track"><div class="hbar-fill" style="width:28%;background:var(--pink)"></div></div><div class="hbar-pct">28%</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--coral)"></span>Top 10 chủ đề — người dùng Việt Nam</div>
+      <div class="hbar"><div class="hbar-lbl">Kết nối Telegram / Zalo</div><div class="hbar-track"><div class="hbar-fill" style="width:95%;background:var(--blue)"></div></div><div class="hbar-pct">95%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Lỗi gateway connect failed</div><div class="hbar-track"><div class="hbar-fill" style="width:82%;background:var(--coral)"></div></div><div class="hbar-pct">82%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Lỗi billing / hết credit API</div><div class="hbar-track"><div class="hbar-fill" style="width:78%;background:var(--amber)"></div></div><div class="hbar-pct">78%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Dùng Claude hay ChatGPT?</div><div class="hbar-track"><div class="hbar-fill" style="width:70%;background:var(--violet)"></div></div><div class="hbar-pct">70%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Có cần VPS không?</div><div class="hbar-track"><div class="hbar-fill" style="width:65%;background:var(--teal)"></div></div><div class="hbar-pct">65%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Bảo mật — lộ API key</div><div class="hbar-track"><div class="hbar-fill" style="width:60%;background:var(--pink)"></div></div><div class="hbar-pct">60%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Skill là gì, cài như thế nào?</div><div class="hbar-track"><div class="hbar-fill" style="width:52%;background:var(--green)"></div></div><div class="hbar-pct">52%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Cổng 18789 lộ internet</div><div class="hbar-track"><div class="hbar-fill" style="width:45%;background:var(--coral)"></div></div><div class="hbar-pct">45%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Mỗi tháng tốn bao nhiêu?</div><div class="hbar-track"><div class="hbar-fill" style="width:40%;background:var(--ink3)"></div></div><div class="hbar-pct">40%</div></div>
+      <div class="hbar"><div class="hbar-lbl">So sánh vs ChatGPT</div><div class="hbar-track"><div class="hbar-fill" style="width:35%;background:var(--teal)"></div></div><div class="hbar-pct">35%</div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Chi tiết câu hỏi theo 6 nhóm chức năng</div>
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">⚙️</span><span class="ts-title">Nhóm 1 — Cài đặt & Setup</span><span class="ts-badge"><span class="badge bd-blue">#1 toàn cầu 92%</span></span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">"Gateway connect failed"</div><div class="ts-cell-text">Lỗi phổ biến nhất tại VN và toàn cầu. Nguyên nhân: port bị chiếm, daemon chưa chạy, hoặc firewall block.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Node.js version nào cần cài?</div><div class="ts-cell-text">~500 lần hỏi trên GitHub Issues. Cần đúng LTS version, không dùng nightly builds.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Lỗi npm EACCES global install</div><div class="ts-cell-text">Lỗi phổ biến khi dùng sudo với npm. Fix: cấu hình npm prefix về thư mục user.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Windows + WSL2 có chạy được không?</div><div class="ts-cell-text">Câu hỏi thường gặp của user Windows. Câu trả lời: có, nhưng cần WSL2, không chạy native.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Port 18789 bị chiếm</div><div class="ts-cell-text">Cần đổi port trong config. Tuyệt đối không expose port này ra internet public.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Bao lâu để setup xong lần đầu?</div><div class="ts-cell-text">Tech user: 30-60 phút. Non-tech: vài giờ đến vài ngày, nhiều người bỏ cuộc.</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">🔒</span><span class="ts-title">Nhóm 2 — Bảo mật & Rủi ro</span><span class="ts-badge"><span class="badge bd-coral">Cảnh báo từ Malwarebytes & Cisco</span></span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">Có an toàn khi cho terminal access?</div><div class="ts-cell-text">Maintainer chính thức cảnh báo: "Nếu không hiểu CLI, project này quá nguy hiểm để dùng an toàn."</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">API key có bị lộ không?</div><div class="ts-cell-text">Có thể lộ nếu cấu hình sai. Không commit API key vào repo. Dùng .env và gitignore.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Expose port 18789 có sao không?</div><div class="ts-cell-text">Azdigi.com: "KHÔNG BAO GIỜ". Port này không có auth, ai cũng có thể access agent của bạn.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Skill từ cộng đồng có malware không?</div><div class="ts-cell-text">Cisco security report cảnh báo một số community skills có code độc hại. Chỉ dùng skills có xác minh.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Nên chạy với quyền root không?</div><div class="ts-cell-text">Docs chính thức: KHÔNG. Chạy root → agent có toàn quyền hệ thống → rủi ro cực cao.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Dữ liệu agent lưu ở đâu?</div><div class="ts-cell-text">Lưu local trong workspace folder. Backup bằng private git repo. Không tự sync lên cloud.</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">💰</span><span class="ts-title">Nhóm 3 — Chi phí & Model AI</span><span class="ts-badge"><span class="badge bd-amber">$7–$50/tháng range thực tế</span></span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">Mỗi tháng tốn bao nhiêu?</div><div class="ts-cell-text">Range thực tế: $7–$50/tháng cloud model. $0 nếu dùng Ollama local. Dao động lớn theo usage.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Lỗi 429 — rate limit</div><div class="ts-cell-text">Backoff và retry tự động. Hoặc switch sang model rẻ hơn trong lúc chờ. Dùng quota monitoring.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Claude hay GPT tiết kiệm hơn?</div><div class="ts-cell-text">Phụ thuộc task. Claude Haiku rẻ nhất cho task nhẹ. GPT-5.5 mạnh nhất nhưng đắt nhất.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Dùng Ollama local miễn phí không?</div><div class="ts-cell-text">Được, nhưng cần GPU mạnh. Gemma/Llama chạy local "ngu hơn nhiều" so với cloud model.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Billing error — API hết credit</div><div class="ts-cell-text">Lỗi phổ biến tại VN. Set giới hạn $1/ngày trong API key settings để tránh "thủng ví".</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">OAuth ChatGPT Plus có tiết kiệm hơn không?</div><div class="ts-cell-text">Có. Link acc ChatGPT Plus (~$20/tháng) thay vì trả per-token API → tiết kiệm 40-60% với heavy user.</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">📱</span><span class="ts-title">Nhóm 4 — Kết nối Kênh</span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">Kết nối Telegram qua BotFather</div><div class="ts-cell-text">Top bài viết VN. Cần tạo bot token từ @BotFather, add vào config. Bot cần allow user ID + quyền admin để đọc group messages.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Zalo — kênh đặc thù Việt Nam</div><div class="ts-cell-text">Zalo là nền tảng VN đầu tiên được hỗ trợ — điểm khác biệt so với toàn cầu. Quy trình setup phức tạp hơn Telegram.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">WhatsApp QR code lỗi</div><div class="ts-cell-text">Unlink và quét lại, xem rate limits WhatsApp. Nền tảng này hay bị block bot nhất trong 4 kênh phổ biến.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Bot im lặng trong group</div><div class="ts-cell-text">Cần config allow user ID + cấp admin cho bot. Lỗi config allowlist là nguyên nhân phổ biến nhất.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Discord integration</div><div class="ts-cell-text">Phổ biến trong cộng đồng dev. Dùng Discord channels như "rooms" riêng biệt cho từng loại task.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Slack workspace connect</div><div class="ts-cell-text">Use case doanh nghiệp. Lỗi hay gặp nhất: OAuth scope không đủ để đọc/ghi message.</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">🧠</span><span class="ts-title">Nhóm 5 — Memory & Advanced</span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">Bot "quên hết" sau restart</div><div class="ts-cell-text">Ghi vào MEMORY.md. Cộng đồng VN tìm ra trick: summarize session bằng model rẻ + cho bot đọc 200 dòng đầu trước mỗi task.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">SOUL.md là gì?</div><div class="ts-cell-text">File cấu hình "tính cách" của agent — tone, nguyên tắc, phạm vi hoạt động. Viết kỹ SOUL.md = agent ổn định hơn nhiều.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Memory DB locked sau restart</div><div class="ts-cell-text">Chạy `openclaw doctor` để diagnose và fix. Thường do process cũ chưa tắt hoàn toàn.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Sub-agent là gì?</div><div class="ts-cell-text">Agent con được spawn để xử lý sub-task song song. Dùng khi task phức tạp cần nhiều context khác nhau.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Hermes vs OpenClaw?</div><div class="ts-cell-text">Hermes lo memory & conversational context. OpenClaw lo orchestration & tool-calling. Phối hợp tốt hơn chọn 1.</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">Vector DB dài hạn</div><div class="ts-cell-text">Lưu lịch sử chat vào DB vector mà không ảnh hưởng tool calling — cần careful schema design. Pgvector + Postgres phổ biến nhất.</div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Lỗi phổ biến nhất — từ GitHub Issues & Docs</div>
+  <div class="card">
+    <table class="dtable">
+      <thead><tr><th>#</th><th>Lỗi</th><th>Xếp hạng VN</th><th>Nguyên nhân</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Gateway connect failed</td><td><span class="badge bd-coral">#1 VN</span></td><td>Port bị chiếm hoặc daemon chưa start</td><td>Kiểm tra port, restart daemon</td></tr>
+        <tr><td>2</td><td>429 Rate limit</td><td><span class="badge bd-amber">#2</span></td><td>Vượt quota API provider</td><td>Backoff, switch model rẻ hơn</td></tr>
+        <tr><td>3</td><td>npm EACCES install</td><td><span class="badge bd-blue">#3</span></td><td>Dùng sudo với npm</td><td>Cấu hình npm prefix về user dir</td></tr>
+        <tr><td>4</td><td>Billing error / hết credit</td><td><span class="badge bd-teal">#4 VN</span></td><td>API key hết tiền</td><td>Nạp thêm hoặc set daily limit</td></tr>
+        <tr><td>5</td><td>Memory DB locked</td><td><span class="badge bd-violet">#5</span></td><td>Process cũ chưa tắt hoàn toàn</td><td>openclaw doctor, kill process cũ</td></tr>
+        <tr><td>6</td><td>Telegram silent failing</td><td><span class="badge bd-blue">#6</span></td><td>Thiếu allow user ID hoặc admin</td><td>Config allowlist, cấp admin</td></tr>
+        <tr><td>7</td><td>Skill won't install</td><td><span class="badge bd-amber">#7</span></td><td>Node version không đúng</td><td>Kiểm tra Node LTS, permissions</td></tr>
+        <tr><td>8</td><td>WhatsApp QR lỗi</td><td><span class="badge bd-coral">#8 VN</span></td><td>WhatsApp rate limit bot</td><td>Unlink, quét lại, chờ cooldown</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footnote">
+    <strong>Nguồn:</strong> GitHub Issues (81K+), docs.openclaw.ai, openclawdatabase.com, reddit.com/r/openclaw, tinhte.vn, anonyviet.com, azdigi.com, cellphones.com.vn, malwarebytes.com. Phân tích tháng 5/2026.
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 2 — VN GROUP AMA
+════════════════════════════════════════════════════ -->
+<div class="page" id="p2">
+<div class="wrap">
+
+  <div class="slabel">Tổng quan AMA — Group Facebook OpenClaw VN</div>
+  <div class="metrics">
+    <div class="mcard c-teal">
+      <div class="m-label">Thành viên tham gia</div>
+      <div class="m-val">~60</div>
+      <div class="m-sub">Tech enthusiast & người mới là chủ yếu</div>
+    </div>
+    <div class="mcard c-blue">
+      <div class="m-label">Bình luận phân tích</div>
+      <div class="m-val">100+</div>
+      <div class="m-sub">Nhiều thread hội thoại dài, data thực tế</div>
+    </div>
+    <div class="mcard c-amber">
+      <div class="m-label">Chủ đề nóng #1</div>
+      <div class="m-val">Chi phí</div>
+      <div class="m-sub">88% câu hỏi liên quan đến cost & API</div>
+    </div>
+    <div class="mcard c-coral">
+      <div class="m-label">Từ khoá viral</div>
+      <div class="m-val">"Nuôi tôm"</div>
+      <div class="m-sub">Biệt danh thân thương cho OpenClaw tại VN</div>
+    </div>
+  </div>
+
+  <div class="slabel">Tần suất chủ đề & Sentiment người dùng VN</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--teal)"></span>Câu hỏi theo tần suất — AMA data thực tế</div>
+      <div class="hbar"><div class="hbar-lbl">Chi phí & tiết kiệm token</div><div class="hbar-track"><div class="hbar-fill" style="width:88%;background:var(--blue)"></div></div><div class="hbar-pct">88%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Bot / "tôm" không phản hồi</div><div class="hbar-track"><div class="hbar-fill" style="width:75%;background:var(--coral)"></div></div><div class="hbar-pct">75%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Chọn model (local vs cloud)</div><div class="hbar-track"><div class="hbar-fill" style="width:70%;background:var(--violet)"></div></div><div class="hbar-pct">70%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Kết nối Zalo / Telegram group</div><div class="hbar-track"><div class="hbar-fill" style="width:65%;background:var(--teal)"></div></div><div class="hbar-pct">65%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Dùng không có API key</div><div class="hbar-track"><div class="hbar-fill" style="width:58%;background:var(--amber)"></div></div><div class="hbar-pct">58%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Memory / bộ nhớ dài hạn</div><div class="hbar-track"><div class="hbar-fill" style="width:50%;background:var(--violet)"></div></div><div class="hbar-pct">50%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Automation workflow cụ thể</div><div class="hbar-track"><div class="hbar-fill" style="width:45%;background:var(--teal)"></div></div><div class="hbar-pct">45%</div></div>
+      <div class="hbar"><div class="hbar-lbl">VPS vs local machine</div><div class="hbar-track"><div class="hbar-fill" style="width:40%;background:var(--green)"></div></div><div class="hbar-pct">40%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Hermes vs OpenClaw?</div><div class="hbar-track"><div class="hbar-fill" style="width:32%;background:var(--ink3)"></div></div><div class="hbar-pct">32%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Yolo mode / bớt approval</div><div class="hbar-track"><div class="hbar-fill" style="width:25%;background:var(--pink)"></div></div><div class="hbar-pct">25%</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--amber)"></span>Sentiment & profile người dùng VN</div>
+      <div style="margin-bottom:18px;">
+        <div class="sent-row"><div class="sent-lbl">Hào hứng, tò mò</div><div class="sent-track"><div class="sent-pct" style="width:72%;background:var(--blue);height:100%;border-radius:3px;"></div></div><div class="sent-pct">72%</div></div>
+        <div class="sent-row"><div class="sent-lbl">Bối rối, cần help</div><div class="sent-track"><div class="sent-pct" style="width:58%;background:var(--amber);height:100%;border-radius:3px;"></div></div><div class="sent-pct">58%</div></div>
+        <div class="sent-row"><div class="sent-lbl">Lo ngại bảo mật</div><div class="sent-track"><div class="sent-pct" style="width:45%;background:var(--coral);height:100%;border-radius:3px;"></div></div><div class="sent-pct">45%</div></div>
+        <div class="sent-row"><div class="sent-lbl">Thất vọng với lỗi</div><div class="sent-track"><div class="sent-pct" style="width:38%;background:var(--pink);height:100%;border-radius:3px;"></div></div><div class="sent-pct">38%</div></div>
+        <div class="sent-row"><div class="sent-lbl">Bỏ cuộc sớm</div><div class="sent-track"><div class="sent-pct" style="width:30%;background:var(--lavender);height:100%;border-radius:3px;"></div></div><div class="sent-pct">30%</div></div>
+      </div>
+      <div class="card-h" style="margin-top:8px;"><span class="ch-dot" style="background:var(--teal)"></span>Kênh thực tế tại VN — từ data top posts</div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:10px;padding:6px 10px;background:#fdecea;border-radius:6px;border-left:2px solid var(--coral);">⚠️ Đính chính: Telegram KHÔNG phải kênh số 1 tại VN. Zalo ngang bằng hoặc nhỉnh hơn về số bài & engagement thực tế.</div>
+      <div class="hbar"><div class="hbar-lbl w140">Zalo</div><div class="hbar-track"><div class="hbar-fill" style="width:95%;background:var(--teal)"></div></div><div class="hbar-pct">5 bài · #1</div></div>
+      <div class="hbar"><div class="hbar-lbl w140">Telegram</div><div class="hbar-track"><div class="hbar-fill" style="width:78%;background:var(--blue)"></div></div><div class="hbar-pct">3 bài · #2</div></div>
+      <div class="hbar"><div class="hbar-lbl w140">Facebook Messenger</div><div class="hbar-track"><div class="hbar-fill" style="width:55%;background:var(--amber)"></div></div><div class="hbar-pct">đề cập</div></div>
+      <div class="hbar"><div class="hbar-lbl w140">Discord</div><div class="hbar-track"><div class="hbar-fill" style="width:15%;background:var(--violet)"></div></div><div class="hbar-pct">ít</div></div>
+      <div style="font-size:11px;color:var(--ink3);margin-top:8px;">Nguồn: 114 top posts VN group · Avg views Zalo posts 13,260 vs Telegram 13,140</div>
+    </div>
+  </div>
+
+  <div class="slabel">🇻🇳 VN vs 🌍 Global — So sánh trực tiếp từ data thực tế</div>
+  <div class="card" style="margin-bottom:16px;">
+    <table class="dtable">
+      <thead><tr><th>Chiều so sánh</th><th>🇻🇳 Thị trường Việt Nam</th><th>🌍 Global (Reddit / GitHub)</th><th>Ý nghĩa với content</th></tr></thead>
+      <tbody>
+        <tr><td>Kênh giao tiếp #1</td><td><strong style="color:var(--teal)">Zalo</strong> (5 bài top posts) + Telegram (3 bài)</td><td>Telegram 78%, Discord 42%, WhatsApp 35%</td><td>AMA VN nên nhắc Zalo trước Telegram</td></tr>
+        <tr><td>Pain point số 1</td><td><strong style="color:var(--coral)">Chi phí & tiết kiệm token</strong> — 88% câu hỏi</td><td>Security & bảo mật — concern hàng đầu</td><td>Pillar 1 (Chi phí) đúng cho VN, không phải Security</td></tr>
+        <tr><td>Nơi thảo luận chính</td><td><strong>Facebook Group</strong> 150K members</td><td>Reddit r/openclaw, GitHub Issues, Discord</td><td>FB Group là kênh distribution chính của bạn</td></tr>
+        <tr><td>Use case đặc thù</td><td>Thuế TNCN, kế toán, đa sàn TMĐT, hành chính nhà nước, Zalo bot group</td><td>Life OS, campsite booking, wearable integration, Home Assistant</td><td>Pillar 5 (VN Đặc thù) có lợi thế độc quyền</td></tr>
+        <tr><td>Mô hình AI local</td><td>Ít phổ biến — thiếu phần cứng, ưu tiên cost free cloud</td><td>30% dùng Ollama local — quan tâm privacy</td><td>Không cần đẩy mạnh nội dung về local model cho VN</td></tr>
+        <tr><td>Tool tự build</td><td><strong style="color:var(--amber)">Cao</strong> — 9router, Zalo-mod, Skill Thuế TNCN, setup wizard</td><td>Trung bình — hầu hết dùng official release</td><td>Highlight builder ecosystem VN là điểm tự hào</td></tr>
+        <tr><td>Mindset & kỳ vọng</td><td>Thiên về hype, ít honest failure sharing, nhiều kỳ vọng quá cao</td><td>Cân bằng hơn — "intern không phải CEO" phổ biến</td><td>Pillar 3 (Mindset) quan trọng đặc biệt cho VN</td></tr>
+        <tr><td>Mua acc / API lậu</td><td><strong style="color:var(--coral)">Phổ biến</strong> — nhiều bài mua bán acc ChatGPT, "thị trường hỗn loạn"</td><td>Hiếm — dùng chính chủ là chuẩn mực</td><td>Cần content nhắc rủi ro mua acc lậu một cách khéo léo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="slabel">8 Pain point cốt lõi — từ comments thực tế</div>
+  <div class="g2">
+    <div class="card">
+      <div class="prow"><div class="picon" style="background:var(--fill-blue)">💸</div><div><div class="p-title">1. Chi phí là nỗi đau số 1</div><div class="p-desc">Mọi người hỏi cách giảm bill liên tục. Giải pháp cộng đồng tự tìm: xoay vòng Google API key + OpenRouter free tier, OAuth ChatGPT Plus thay API key, dùng Kimi/DeepSeek khi test, set giới hạn $1/ngày trong API key settings.</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-coral)">🤥</div><div><div class="p-title">2. "Con tôm gian dối" — Silent failure</div><div class="p-desc">Bot hứa làm xong nhưng không trả output. Hallucination + tool-call failure phổ biến nhất. Workaround: luôn verify kết quả, start new session, check API key còn hạn, không tin tuyệt đối vào báo cáo của agent.</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-teal)">🔇</div><div><div class="p-title">3. Bot im lặng trong Telegram group</div><div class="p-desc">Add bot vào group nhưng nó "im re". Nguyên nhân: thiếu allow user ID config và quyền admin. Fix: kêu agent thêm allow userId trong group, cấp admin để có thể đọc messages. Nhiều người mò mãi mới tìm ra.</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-violet)">🧠</div><div><div class="p-title">4. Memory reset sau restart</div><div class="p-desc">Bot "quên hết" sau khi tắt máy. Giải pháp cộng đồng VN: summarize session bằng model rẻ (Gemini Flash), lưu vào .md, cho bot đọc 200 dòng đầu memory trước mỗi task bằng local model miễn phí để tránh tốn token.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="prow"><div class="picon" style="background:var(--fill-amber)">🖥️</div><div><div class="p-title">5. VPS vs local — câu hỏi muôn thuở</div><div class="p-desc">VPS "vài triệu/tháng" theo cộng đồng. Local cần GPU mạnh (4090 nếu chạy local model mạnh). Người mới thường chọn VPS siêu rẻ $18/năm → hay die, lag. Khuyên: VPS $5-10/tháng DigitalOcean/Vultr là điểm cân bằng tốt nhất.</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-green)">🤖</div><div><div class="p-title">6. Local model "ngu" — nhưng miễn phí</div><div class="p-desc">Gemma, Llama local "ngu hơn nhiều" so với GPT-5.5 hay Claude Sonnet. Cộng đồng khuyên: dùng local cho task nhẹ (summarize, classify đơn giản) hoặc task nhạy cảm data. Cloud model cho long-task phức tạp và production workflow.</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-pink)">😤</div><div><div class="p-title">7. Kỳ vọng vs thực tế lệch nhau lớn</div><div class="p-desc">"Làm culi cho nó" — nhiều người kỳ vọng bot tự làm mọi thứ. Thực tế: vẫn cần prompt kỹ, define input/output rõ, review output từng bước. Gap kỳ vọng là nguồn gốc của 30% user bỏ cuộc trong tháng đầu.</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-blue)">📱</div><div><div class="p-title">8. Mobile workflow — nhu cầu thực tế</div><div class="p-desc">Telegram dùng để ra lệnh khi đang di chuyển — fix bug, deploy, vibe code. Đây là use case "killer" khiến người dùng gắn bó với OpenClaw thay vì chỉ dùng ChatGPT web. "Nhắn qua tele n code rồi deploy luôn — khá ổn nếu task quen tay."</div></div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Quotes nguyên văn & Giải pháp cộng đồng tự tìm</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--coral)"></span>Bình luận thực tế đáng nhớ nhất</div>
+      <div class="qblock" style="border-left-color:var(--coral)"><div class="q-text">"Con tôm của mình hay gian dối, cứ hứa là làm xong rồi nhưng check lại thì nó không trả output gì cả."</div><div class="q-meta">— Từ Oanh · Silent failure / hallucination</div></div>
+      <div class="qblock" style="border-left-color:var(--amber)"><div class="q-text">"Test có 1 Group mà mỗi ngày tốn 15$, lại còn lỗi tùm lum — cần bạn rành cầm tay chỉ việc."</div><div class="q-meta">— Đức Phúc Nguyễn · FB automation bị overkill chi phí</div></div>
+      <div class="qblock" style="border-left-color:var(--violet)"><div class="q-text">"Nó toàn vẽ giấc mơ màu hồng, em làm hết cho anh, a chỉ cần duyệt — tới khi thực hiện thì nó toàn bắt tui làm. Cuối cùng lại làm culi cho nó."</div><div class="q-meta">— Vo The My · Gap kỳ vọng vs thực tế</div></div>
+      <div class="qblock" style="border-left-color:var(--teal)"><div class="q-text">"Đang ngoài đường có báo bug thì nhắn qua tele, nó code rồi deploy luôn — khá ổn nếu task quen tay."</div><div class="q-meta">— Trịnh Hùng Anh · Mobile dev workflow thực tế</div></div>
+      <div class="qblock" style="border-left-color:var(--blue)"><div class="q-text">"Sao em cài subagent mà cứ mỗi lần reset máy lại tự nó đổi tên? Làm sao để các agent làm việc như 1 công ty?"</div><div class="q-meta">— Hoang Anh Tu · Memory persistence, agent orchestration</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--green)"></span>Giải pháp cộng đồng VN tự tìm ra</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--blue)"></div><div class="ins-text"><strong>Xoay vòng API key miễn phí:</strong> Google API key + OpenRouter free tier để test workflow không tốn tiền.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>OAuth ChatGPT Plus tiết kiệm hơn:</strong> Link acc $20/tháng thay vì trả per-token API — tiết kiệm 40-60% với heavy user.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Summarize memory bằng model rẻ:</strong> Gemini Flash / local model tóm tắt session → lưu .md → bot đọc 200 dòng đầu = vừa tiết kiệm vừa giữ context.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text"><strong>Set giới hạn $1/ngày:</strong> Vào API key settings, limit daily spend + reset theo ngày để không bị "thủng ví" bất ngờ.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--green)"></div><div class="ins-text"><strong>Bật Yolo mode:</strong> Giảm số lần bot hỏi approval — dùng cho task quen tay hoặc môi trường test, không dùng production.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text"><strong>Kimi/DeepSeek khởi đầu, GPT-5.5 production:</strong> Build và test workflow với model rẻ, đổi sang model mạnh khi cần chạy thật.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--pink)"></div><div class="ins-text"><strong>Hermes + OpenClaw phối hợp:</strong> Hermes lo memory & conversational context, OC lo tool-calling & orchestration — không nên chọn 1 bỏ 1.</div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Use case thực tế & Từ khoá slang cộng đồng</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--violet)"></span>Workflow người dùng VN đang làm</div>
+      <table class="dtable">
+        <thead><tr><th>Use Case</th><th>Chi phí thực</th><th>Độ ổn định</th></tr></thead>
+        <tbody>
+          <tr><td>Tư vấn khách hàng qua Zalo</td><td>~$10-20/tháng</td><td><span class="badge bd-teal">Ổn nếu train tốt</span></td></tr>
+          <tr><td>Duyệt bài Group Facebook</td><td>$5-15/ngày</td><td><span class="badge bd-coral">Tốn, cần tối ưu kỹ</span></td></tr>
+          <tr><td>Email & báo cáo Excel định kỳ</td><td>~$5-15/tháng</td><td><span class="badge bd-green">Rất ổn định</span></td></tr>
+          <tr><td>Vibe code + deploy qua Telegram</td><td>~$20-40/tháng</td><td><span class="badge bd-teal">Ổn với dev có kinh nghiệm</span></td></tr>
+          <tr><td>Tạo video ngắn 30s tự động</td><td>Chưa rõ</td><td><span class="badge bd-amber">Đang tìm workflow</span></td></tr>
+          <tr><td>Cào content Douyin / web scraping</td><td>~$5-10/tháng</td><td><span class="badge bd-amber">Trung bình, hay bị block</span></td></tr>
+          <tr><td>Báo cáo tổng hợp từ Excel nội bộ</td><td>~$5-10/tháng</td><td><span class="badge bd-green">Ổn với data sạch</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--amber)"></span>Slang & Từ khoá đặc thù cộng đồng VN</div>
+      <div class="tag-cloud">
+        <span class="tag bd-coral">🦀 "Con tôm" = OpenClaw agent</span>
+        <span class="tag bd-blue">"Nuôi tôm" = dùng OC hàng ngày</span>
+        <span class="tag bd-amber">"Tôm gian dối" = bot silent fail</span>
+        <span class="tag bd-violet">"Vibe code" = prompt-driven coding</span>
+        <span class="tag bd-teal">"9router" = thiết bị chạy OC</span>
+        <span class="tag bd-green">"Thủng workflow" = automation bị đứt</span>
+        <span class="tag bd-pink">"Đốt token" = tiêu nhiều API credit</span>
+        <span class="tag bd-gray">"Phang 4090" = GPU local mạnh</span>
+        <span class="tag bd-blue">"Hermes" = memory framework</span>
+        <span class="tag bd-coral">"Làm culi cho nó" = người dùng làm thay AI</span>
+        <span class="tag bd-amber">"Mặc áo không mặc quần" = cấu hình thiếu</span>
+        <span class="tag bd-gray">"Thị trường hỗn loạn" = API key lậu bị quét</span>
+        <span class="tag bd-violet">"Paperclip" = tool kết hợp với Hermes + OC</span>
+        <span class="tag bd-teal">"Max-Claw / MiMo-Claw" = các fork variant</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <strong>Nguồn:</strong> Google Sheets "User insight" — AMA thực tế từ group Facebook OpenClaw VN · ~60 thành viên · 100+ bình luận. Dữ liệu do admin group cung cấp trực tiếp. Phân tích tháng 5/2026.
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 3 — REDDIT USE CASES
+════════════════════════════════════════════════════ -->
+<div class="page" id="p3">
+<div class="wrap">
+
+  <div class="slabel">Tổng quan — Post AMA viral r/openclaw</div>
+  <div class="metrics">
+    <div class="mcard c-coral">
+      <div class="m-label">Comments phân tích</div>
+      <div class="m-val">145</div>
+      <div class="m-sub">Post: "What are you actually using OpenClaw for?"</div>
+    </div>
+    <div class="mcard c-blue">
+      <div class="m-label">Unique use cases</div>
+      <div class="m-val">47+</div>
+      <div class="m-sub">Từ grocery shopping đến SOC investigation</div>
+    </div>
+    <div class="mcard c-teal">
+      <div class="m-label">Workflow ổn định</div>
+      <div class="m-val">~35%</div>
+      <div class="m-sub">Báo cáo "genuinely reliable" không cần babysit</div>
+    </div>
+    <div class="mcard c-amber">
+      <div class="m-label">Mindset thành công</div>
+      <div class="m-val">"Intern"</div>
+      <div class="m-sub">Không phải CEO — metaphor được nhắc nhiều nhất</div>
+    </div>
+  </div>
+
+  <div class="slabel">Phân bổ use case & Kênh sử dụng</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--coral)"></span>Tần suất nhóm use case — 145 comments</div>
+      <div class="hbar"><div class="hbar-lbl">Personal productivity & life OS</div><div class="hbar-track"><div class="hbar-fill" style="width:82%;background:var(--blue)"></div></div><div class="hbar-pct">82%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Software development & coding</div><div class="hbar-track"><div class="hbar-fill" style="width:71%;background:var(--violet)"></div></div><div class="hbar-pct">71%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Email & calendar management</div><div class="hbar-track"><div class="hbar-fill" style="width:68%;background:var(--teal)"></div></div><div class="hbar-pct">68%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Content & social media automation</div><div class="hbar-track"><div class="hbar-fill" style="width:55%;background:var(--amber)"></div></div><div class="hbar-pct">55%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Health & fitness tracking</div><div class="hbar-track"><div class="hbar-fill" style="width:48%;background:var(--green)"></div></div><div class="hbar-pct">48%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Website building & maintenance</div><div class="hbar-track"><div class="hbar-fill" style="width:45%;background:var(--coral)"></div></div><div class="hbar-pct">45%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Business operations & CRM</div><div class="hbar-track"><div class="hbar-fill" style="width:40%;background:var(--pink)"></div></div><div class="hbar-pct">40%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Smart home & IoT (Home Assistant)</div><div class="hbar-track"><div class="hbar-fill" style="width:28%;background:var(--amber)"></div></div><div class="hbar-pct">28%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Research & data aggregation</div><div class="hbar-track"><div class="hbar-fill" style="width:25%;background:var(--blue)"></div></div><div class="hbar-pct">25%</div></div>
+      <div class="hbar"><div class="hbar-lbl">Finance & market monitoring</div><div class="hbar-track"><div class="hbar-fill" style="width:18%;background:var(--violet)"></div></div><div class="hbar-pct">18%</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--blue)"></span>Kênh & Model phổ biến — từ comments</div>
+      <div style="margin-bottom:18px;">
+        <div class="card-h" style="margin-bottom:10px;font-size:10px;">Kênh giao tiếp với agent</div>
+        <div class="hbar"><div class="hbar-lbl w140">Telegram</div><div class="hbar-track"><div class="hbar-fill" style="width:78%;background:var(--blue)"></div></div><div class="hbar-pct">78%</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">Discord</div><div class="hbar-track"><div class="hbar-fill" style="width:42%;background:var(--violet)"></div></div><div class="hbar-pct">42%</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">WhatsApp</div><div class="hbar-track"><div class="hbar-fill" style="width:35%;background:var(--teal)"></div></div><div class="hbar-pct">35%</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">CLI trực tiếp</div><div class="hbar-track"><div class="hbar-fill" style="width:28%;background:var(--amber)"></div></div><div class="hbar-pct">28%</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">Web UI tự build</div><div class="hbar-track"><div class="hbar-fill" style="width:18%;background:var(--coral)"></div></div><div class="hbar-pct">18%</div></div>
+      </div>
+      <div class="card-h" style="margin-bottom:10px;font-size:10px;">Model AI được dùng</div>
+      <div class="hbar"><div class="hbar-lbl w140">Claude (Sonnet/Opus/Haiku)</div><div class="hbar-track"><div class="hbar-fill" style="width:65%;background:var(--coral)"></div></div><div class="hbar-pct">65%</div></div>
+      <div class="hbar"><div class="hbar-lbl w140">GPT-5.5 / ChatGPT</div><div class="hbar-track"><div class="hbar-fill" style="width:52%;background:var(--green)"></div></div><div class="hbar-pct">52%</div></div>
+      <div class="hbar"><div class="hbar-lbl w140">DeepSeek (v4/pro)</div><div class="hbar-track"><div class="hbar-fill" style="width:38%;background:var(--blue)"></div></div><div class="hbar-pct">38%</div></div>
+      <div class="hbar"><div class="hbar-lbl w140">Local (Ollama/Qwen/Gemma)</div><div class="hbar-track"><div class="hbar-fill" style="width:30%;background:var(--violet)"></div></div><div class="hbar-pct">30%</div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Use case chi tiết — phân tích sâu theo nhóm</div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">🏠</span><span class="ts-title">Personal Life OS — Tự động hóa cuộc sống</span><span class="ts-badge"><span class="badge bd-blue">Nhóm lớn nhất — 82%</span></span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">🎂 Birthday message automation</div><div class="ts-cell-text">Cào lịch sinh nhật → viết tin nhắn theo ngôn ngữ phù hợp tên người → tìm trên messaging app → gửi Telegram để duyệt. Giải pháp cho "3-5 birthdays per day" — social person hay quên.</div><div class="ts-cell-who">SmoothMarx · "people appreciate the thought"</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📋 Jury duty scheduler</div><div class="ts-cell-text">Check website tòa án theo lịch, đọc nhóm số, tự lên lịch check lại. "Worked like a charm" — task nhỏ nhưng cực annoying nếu làm thủ công, dễ quên lúc bận.</div><div class="ts-cell-who">LoveSpiritual · 100% reliable use case</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🏕️ Campsite reservation sniper</div><div class="ts-cell-text">Monitor cancellation cho Fire Lookout Towers, đặt ngay theo date range định sẵn. Competitive use case — cần phản ứng nhanh hơn người khác, agent làm được điều này liên tục 24/7.</div><div class="ts-cell-who">Repulsive_Mood_4181 · "sends agent to go hunting"</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🛒 Auto grocery shopping</div><div class="ts-cell-text">Chuẩn bị giỏ hàng hàng tuần theo thói quen ăn uống + sản phẩm đang giảm giá. Recurring task nhàm chán, thực hiện đúng giờ, output binary (có/không) — pattern chuẩn.</div><div class="ts-cell-who">fermatf · "saves quite a lot of time"</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🏴‍☠️ "Captain Redclaw" recipe bot</div><div class="ts-cell-text">Convert recipes → YAML → vector DB, chat qua Telegram. Bot nói chuyện như cướp biển. Giải quyết "analysis paralysis" khi chọn món. Use case sáng tạo nhất trong personal category.</div><div class="ts-cell-who">heythiswayup · personality-driven agent</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🏠 Home Assistant mega-integration</div><div class="ts-cell-text">Task management, location reminders, garden planning, household finance, health tracking type-2 diabetes, daily scoring 1-10, reward system. Toàn bộ life OS trên 1 agent + HA. <strong style="color:var(--blue)">Comment phức tạp nhất thread.</strong></div><div class="ts-cell-who">vrjan · life OS hoàn chỉnh nhất</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">💻</span><span class="ts-title">Dev & Tech — Coding, Infra, Self-hosted</span><span class="ts-badge"><span class="badge bd-violet">Ổn định nhất — kinh nghiệm quyết định</span></span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">⛷️ Code từ ski lift</div><div class="ts-cell-text">Developer build production websites trong khi trượt tuyết. "Instead of sitting at a desk." Mobile + async workflow — đây là differentiator thực sự của OpenClaw so với dùng IDE thuần.</div><div class="ts-cell-who">gamingdiver · experienced developer</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📸 Self-hosted server manager</div><div class="ts-cell-text">Quản lý Immich (Google Photos tự host) + Nextcloud (Google Suite tự host). Lấy file theo yêu cầu qua Telegram. 100% self-hosted, zero cloud dependency. Setup 1 lần, dùng mãi.</div><div class="ts-cell-who">ng501kai · "help manage pretty perfect"</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🔧 OSS maintenance agent</div><div class="ts-cell-text">Maintain nhiều repos cùng lúc — new issues, Dependabot PRs, housekeeping cron. Dùng "routines" để queue tasks cho agent, chia context theo nhóm repos có dependency.</div><div class="ts-cell-who">iamoutofcoffee · "freed up to focus on features"</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🎮 Math game từ Discord tại sở thú</div><div class="ts-cell-text">Build game toán học cho con trong khi dạo sở thú + uống whiskey tối. Con chơi 3 tiếng trên xe, đánh bại game rồi yêu cầu thêm exponents. "Best. Investment. Ever."</div><div class="ts-cell-who">Substantial-Elk-9138 · parenting use case</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🤖 Agent tự tiến hóa + "boredom drive"</div><div class="ts-cell-text">Nếu không tương tác >30 phút, agent tự tìm việc làm theo gradient scale từ context gần đây. Implement TPG, GRAO, GNW frameworks. Auto-Evolution — use case tiên tiến nhất thread.</div><div class="ts-cell-who">Impressive-Handle-69 · advanced architecture</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📱 ESP32 + Flipper Zero deployment</div><div class="ts-cell-text">Deploy OpenClaw lên hardware boards. Build 2 app Swift lên App Store, 4 website, content machine cho animal shelter — "actually worked, babies got adopted faster."</div><div class="ts-cell-who">wittlewayne · "real life uses"</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">💪</span><span class="ts-title">Health & Fitness — Coach thay thế dịch vụ trả phí</span><span class="ts-badge"><span class="badge bd-green">ROI rõ ràng nhất</span></span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">🚴 Cycling + weightlifting coach</div><div class="ts-cell-text">API Hevy (gym) + intervals.icu (cycling). Mỗi Chủ nhật review + lập kế hoạch tập cả tuần. Skill chuẩn hóa phân tích training load, bench press trending. Tiết kiệm ~$200/tháng coach thật.</div><div class="ts-cell-who">simzilla77 · 79$ Hevy lifetime + free intervals.icu</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🏃 Oura + Strava + Withings full stack</div><div class="ts-cell-text">3 wearable APIs + nutritionist notes + macro targets. Chụp ảnh bữa ăn để log calories. Coaching real-time + weekly summary. Use case wearables integration đầy đủ nhất thread.</div><div class="ts-cell-who">Fenix_Fyre · multi-API fitness integration</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🩺 Coach cho bệnh tiểu đường type 2</div><div class="ts-cell-text">Track food từ ảnh + text qua Discord, liên kết vitals từ Home Assistant. "Genuinely useful rather than just a toy feature" — medical use case với stakes thật, không phải thử nghiệm.</div><div class="ts-cell-who">vrjan · medical-grade tracking</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">⚖️ Calorie in vs out tracker</div><div class="ts-cell-text">Self-report food → lookup + estimate calories, đối chiếu với fitness tracker output. Nhắc backlog notes. Down 9 pounds trong 1.5 tháng. Không update từ tháng 3 — vẫn chạy ổn.</div><div class="ts-cell-who">TechGjod + sven_ftw · sustained results</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📊 Automated CRM sales coach</div><div class="ts-cell-text">Monitor CRM messages, nghe mọi sales call, grade + feedback, phân tích trend transcript theo thời gian, identify blind spots. "Taken 3 months to dial in — not as easy as one may think."</div><div class="ts-cell-who">Sea_Definition8039 · B2B sales use case</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📈 WakeonLan power management</div><div class="ts-cell-text">Tắt/bật máy tính chạy OC từ xa qua WakeonLan để tiết kiệm token heartbeat và điện. "Save tokens on heartbeats and electricity" — smart cost optimization từ experienced user.</div><div class="ts-cell-who">simzilla77 · resource optimization</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">💼</span><span class="ts-title">Business & Professional — SMB và doanh nghiệp nhỏ</span><span class="ts-badge"><span class="badge bd-amber">Chi phí cao, ROI cần đo lường</span></span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">🎸 Music magazine tự vận hành</div><div class="ts-cell-text">Multi-agent: viết bài, verify nguồn, GSC indexing, SEO. Chủ chỉ đưa editorial direction. Podcast AI agents chạy vài tháng mostly automated. Multi-agent content factory — first mover advantage.</div><div class="ts-cell-who">LowCodeMagic + marc30510</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🏗️ WordPress project coordination</div><div class="ts-cell-text">OC + WordPress backend API. Update site bằng prompts. Private pages cho từng client với PDF download, feedback forms → master spreadsheet → website. "Taken project coordination to a whole new level."</div><div class="ts-cell-who">frank11979 · client project management</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📞 Pre-meeting research agent</div><div class="ts-cell-text">Watch calendar → LinkedIn + job openings + earnings → pre-meeting brief. Nanny timesheet, lunch daily, LinkedIn DM spam filter. "Anything you'd hire a human VA to do" — VA replacement.</div><div class="ts-cell-who">foxbarrington · executive assistant use case</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🤖 4-agent business swarm</div><div class="ts-cell-text">Agent 1: websites + n8n. Agent 2: market scanning + live trading. Agent 3: music + curriculum. Agent 4: BizDev + revenue opportunities + payments management cho 3 agent kia. Hierarchy agent system.</div><div class="ts-cell-who">TheRealLdeezee · multi-agent hierarchy</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📱 Social media auto-posting</div><div class="ts-cell-text">Pull data từ RSS + APIs → viết post → webhook → n8n → post lên LinkedIn/Reddit/X qua OAuth. Full pipeline không cần tay. Kết hợp với custom MCP để manage projects/tasks/habits trong Postgres DB.</div><div class="ts-cell-who">CommitteeDry5570 · github.com/WalrusQuant/mcp-dailyagent</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🔒 SOC & compliance automation</div><div class="ts-cell-text">Security Operations Center investigations và tạo compliance documents. Enterprise use case với regulated industries. Ít được nhắc nhưng high value — một số công ty dùng OC thay cho analyst junior.</div><div class="ts-cell-who">General-Garden-5896 · enterprise security</div></div>
+    </div>
+  </div>
+
+  <div class="topic-section">
+    <div class="ts-header"><span class="ts-icon">🔬</span><span class="ts-title">Research, Data & Niche Use Cases — Sáng tạo & Bất ngờ nhất</span></div>
+    <div class="ts-body">
+      <div class="ts-cell"><div class="ts-cell-title">🚘 Automotive knowledge base</div><div class="ts-cell-text">Index service manuals + parts catalogs + lubricant specs thành Skills. Hỏi torque từng bu-lông, match engine oil theo 10+ thông số. Ingest YouTube mechanic channels qua yt-dlp + caption scraping tự động.</div><div class="ts-cell-who">Alternative-Expert-7 · hobby mechanic</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">✈️ Flight price + restaurant reservation</div><div class="ts-cell-text">Monitor giá vé, tìm restaurant reservations, tạo news/research briefs. "Reliable" với model rẻ như qwen3.6-plus khi task không phức tạp. Dùng agent-data CLI cho structured flight data thay browser automation.</div><div class="ts-cell-who">orthogonal-ghost · travel automation</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📝 Recommendation letter automation</div><div class="ts-cell-text">Thay vì chase người viết letter, agent gọi điện phỏng vấn họ, tổng hợp thành document, gửi để duyệt. "It was amazing" — sáng tạo trong orchestrating human-AI collaboration.</div><div class="ts-cell-who">ehudettun · creative use of phone agent</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">📚 Research paper aggregator</div><div class="ts-cell-text">Grab newly released papers mỗi sáng, tìm commonalities, develop frameworks, implement vào setup. "Boredom drive" — nếu idle >30 phút thì tự làm việc. Cực kỳ advanced, ít người làm được.</div><div class="ts-cell-who">Impressive-Handle-69 · academic research</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🏀 Basketball club website manager</div><div class="ts-cell-text">Update website CLB bóng rổ tự động. "Works like a charm" — use case nhỏ nhưng real production value, không cần thuê web dev mỗi khi có update nội dung đơn giản.</div><div class="ts-cell-who">Zealousideal_Proof_6 · sports club</div></div>
+      <div class="ts-cell"><div class="ts-cell-title">🗞️ Mom's dance studio website</div><div class="ts-cell-text">Setup website qua WhatsApp để mẹ không rành tech tự update. Git repo + rollback. "One-time setup vs always on — big difference." Giải pháp cho người thân không biết tech. Câu chuyện được OP khen nhất thread.</div><div class="ts-cell-who">Tooslowtoohappy · "the future of tech"</div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Key insights tâm lý & Pattern từ 145 comments</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--coral)"></span>4 insight quan trọng nhất</div>
+      <div class="prow"><div class="picon" style="background:var(--fill-blue)">🧑‍💼</div><div><div class="p-title">"Intern, not CEO" — Mindset quyết định tất cả</div><div class="p-desc">Người thành công nhất frame OC như intern xử lý boring stuff. OP: "started trying all the fully autonomous stuff, ended up using OC mostly to clean up my inbox." Chuyển từ full autonomy → supervised automation là bước ngoặt cho tất cả power user trong thread.</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-teal)">📅</div><div><div class="p-title">Cron job pattern = ổn định nhất</div><div class="p-desc">"The only things that genuinely work are basically tasks that could be cron jobs." — ima_beer_ama. Nhiều experienced users đồng ý: task có trigger rõ + output check được → reliable. Task cần judgment → "confident wrong output and you don't realize until damage is done."</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-amber)">🎓</div><div><div class="p-title">Kinh nghiệm là biến số số 1</div><div class="p-desc">"Fully vibe coded, the only difference being experienced developers." — IndoPacificStrat. Cùng một tool, dev giỏi ra production app, newbie tốn $15/ngày duyệt 1 group FB. "The gap between 'AI replaced my workflow' and 'my agent just deleted production' is still mostly experience."</div></div></div>
+      <div class="prow"><div class="picon" style="background:var(--fill-violet)">🔁</div><div><div class="p-title">Context persistence = differentiator thực sự</div><div class="p-desc">"Main reason: they don't forget. Other coding assistants are only project-level — OpenClaw does maintain context." Long-running projects (nhiều tuần), multi-step workflows, "asking what were we doing last time to something that actually knows the answer" là value prop thực sự.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--amber)"></span>Quotes đáng nhớ nhất — nguyên văn từ comments</div>
+      <div class="qblock" style="border-left-color:var(--blue)"><div class="q-text">"I gave it a Coinbase account with $40. It now has $42."</div><div class="q-meta">— Ataxium · Comment ngắn nhất, ý nghĩa nhất thread 😂</div></div>
+      <div class="qblock" style="border-left-color:var(--teal)"><div class="q-text">"Its a senior programmer for the price cheaper than an intern. If you use Opus tokens."</div><div class="q-meta">— read_too_many_books · Cách frame ROI hay nhất</div></div>
+      <div class="qblock" style="border-left-color:var(--coral)"><div class="q-text">"I tried letting it control my finances and ended up almost getting evicted so I had to take that away from it, now it just gives me advice."</div><div class="q-meta">— Every-Highlight-5289 · Cảnh báo về full autonomy 😬</div></div>
+      <div class="qblock" style="border-left-color:var(--amber)"><div class="q-text">"Only a typo away from launching a worldwide salsa campaign at 3am @@"</div><div class="q-meta">— nanaphan32 OP · Về Meta Ads automation cho dance studio</div></div>
+      <div class="qblock" style="border-left-color:var(--violet)"><div class="q-text">"What's breaking for you? 'Genuinely works' is doing a lot of work here. And it's not load bearing."</div><div class="q-meta">— Simple-Month-4347 · Skeptic challenge đáng suy nghĩ</div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Framework đánh giá use case — điều kiện thành công vs thất bại</div>
+  <div class="g4">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--green)"></span>✅ Điều kiện thành công</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--green)"></div><div class="ins-text">Task có output rõ ràng, check được externally</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--green)"></div><div class="ins-text">Scheduled / cron-based, trigger rõ ràng</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--green)"></div><div class="ins-text">Có guardrails, không tự action lớn</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--green)"></div><div class="ins-text">Người dùng có kinh nghiệm kỹ thuật</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--green)"></div><div class="ins-text">Scope hẹp, tools rõ ràng được cung cấp</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--coral)"></span>❌ Điều kiện dễ fail</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text">Cần judgment phức tạp giữa task</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text">Full autonomy với tài chính / production</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text">Success = "this looks right" (vague)</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text">Người mới không hiểu agent hoạt động</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text">Task phụ thuộc vào websites lớn block bot</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--amber)"></span>🚀 Use case "killer" thực sự</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text">Morning brief Telegram trước khi thức</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text">Code review + deploy từ điện thoại</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text">Monitor + alert khi có event cụ thể</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text">Self-hosted infra manager qua chat</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text">Context-aware long-running projects</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--violet)"></span>💡 Pattern thành công chung</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text">Narrow boundary → external approval</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text">Every step leaves a verifiable receipt</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text">Result comes back to a human for review</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text">Durable loop không cần tabs & memory</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text">Build với model rẻ → production với model tốt</div></div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <strong>Nguồn:</strong> 145 comments từ post "What are you actually using OpenClaw for that genuinely works?" trên r/openclaw — file CSV comments_openclaw_filtered.csv do người dùng cung cấp. Phân tích định tính + phân loại thủ công. Tháng 5/2026.
+  </div>
+
+</div></div>
+
+<script>
+function go(i) {
+  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', i===j));
+  document.querySelectorAll('.page').forEach((p,j) => p.classList.toggle('active', i===j));
+}
+
+// Donut chart — overview
+new Chart(document.getElementById('donutOv'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Tech enthusiast','Developer/Engineer','Non-tech','Doanh nghiệp'],
+    datasets: [{
+      data: [38,30,22,10],
+      backgroundColor: ['#5b7fee','#4dbfb0','#f5a623','#e08ab8'],
+      borderWidth: 0,
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => ' '+c.label+': '+c.parsed+'%' } }
+    },
+    cutout: '66%'
+  }
+});
+</script>
+<!-- ═══════════════════════════════════════════════════
+     TAB 4 — TOP POSTS FB GROUP VN
+════════════════════════════════════════════════════ -->
+<div class="page" id="p4">
+<div class="wrap">
+
+  <div class="slabel">Tổng quan — 114 Top Posts (28 ngày gần nhất)</div>
+  <div class="metrics">
+    <div class="mcard c-amber">
+      <div class="m-label">Tổng bài phân tích</div>
+      <div class="m-val">114</div>
+      <div class="m-sub">Top posts của group OpenClaw VN trong 28 ngày</div>
+    </div>
+    <div class="mcard c-blue">
+      <div class="m-label">Tổng lượt xem</div>
+      <div class="m-val">2.4M+</div>
+      <div class="m-sub">Trung bình 21,224 views/bài · Max 287,701</div>
+    </div>
+    <div class="mcard c-coral">
+      <div class="m-label">Bài viral nhất</div>
+      <div class="m-val">287K</div>
+      <div class="m-sub">"Quên OpenClaw đi… dùng 9router" — Vinh Nguyễn</div>
+    </div>
+    <div class="mcard c-teal">
+      <div class="m-label">Tổng reactions</div>
+      <div class="m-val">17,087</div>
+      <div class="m-sub">Trung bình 150 reactions/bài</div>
+    </div>
+  </div>
+
+  <div class="slabel">Phân loại chủ đề & Hiệu suất theo nhóm</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--amber)"></span>Số bài theo chủ đề</div>
+      <div class="hbar"><div class="hbar-lbl w160">Chi phí & API Key</div><div class="hbar-track"><div class="hbar-fill" style="width:97%;background:var(--coral)"></div></div><div class="hbar-pct">37 bài</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Model & Infra</div><div class="hbar-track"><div class="hbar-fill" style="width:35%;background:var(--violet)"></div></div><div class="hbar-pct">13 bài</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">9router / Tool VN</div><div class="hbar-track"><div class="hbar-fill" style="width:40%;background:var(--blue)"></div></div><div class="hbar-pct">15 bài</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Business & Finance</div><div class="hbar-track"><div class="hbar-fill" style="width:27%;background:var(--teal)"></div></div><div class="hbar-pct">10 bài</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Setup & Lỗi</div><div class="hbar-track"><div class="hbar-fill" style="width:19%;background:var(--amber)"></div></div><div class="hbar-pct">7 bài</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Use Case & Showcase</div><div class="hbar-track"><div class="hbar-fill" style="width:11%;background:var(--green)"></div></div><div class="hbar-pct">4 bài</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Community & Meetup</div><div class="hbar-track"><div class="hbar-fill" style="width:6%;background:var(--pink)"></div></div><div class="hbar-pct">2 bài</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Zalo/Telegram Bot</div><div class="hbar-track"><div class="hbar-fill" style="width:3%;background:var(--teal)"></div></div><div class="hbar-pct">1 bài</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--coral)"></span>Avg views & reactions theo chủ đề</div>
+      <table class="dtable">
+        <thead><tr><th>Chủ đề</th><th>Avg Views</th><th>Avg React</th><th>Tổng Views</th></tr></thead>
+        <tbody>
+          <tr><td>9router / Tool VN</td><td>32,421</td><td><strong style="color:var(--amber)">213</strong></td><td>486K</td></tr>
+          <tr><td>Use Case & Showcase</td><td>25,481</td><td><strong style="color:var(--amber)">216</strong></td><td>102K</td></tr>
+          <tr><td>Business & Finance</td><td>21,093</td><td>171</td><td>211K</td></tr>
+          <tr><td>Community & Meetup</td><td>20,889</td><td>179</td><td>42K</td></tr>
+          <tr><td>Model & Infra</td><td>21,146</td><td>123</td><td>275K</td></tr>
+          <tr><td>Chi phí & API Key</td><td>17,650</td><td>129</td><td>653K</td></tr>
+          <tr><td>Zalo Bot</td><td>17,774</td><td>200</td><td>18K</td></tr>
+          <tr><td>Setup & Lỗi</td><td>13,879</td><td>109</td><td>97K</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:var(--ink3);margin-top:10px;">→ <strong style="color:var(--ink2)">9router/Tool</strong> và <strong style="color:var(--ink2)">Use Case</strong> có engagement cao nhất — nội dung thực chiến > hỏi đáp</p>
+    </div>
+  </div>
+
+  <div class="slabel">Top 10 bài — lượt xem cao nhất</div>
+  <div class="card" style="margin-bottom:14px;">
+    <table class="dtable">
+      <thead><tr><th>#</th><th>Nội dung bài</th><th>Tác giả</th><th>Views</th><th>React</th><th>Cmt</th><th>Chủ đề</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td style="max-width:280px;">"Quên OpenClaw đi… dùng 9router + tailscale + claude CLI — đi đâu cũng có đệ code cho"</td><td>Vinh Nguyễn</td><td><strong style="color:var(--amber)">287,701</strong></td><td>1,109</td><td>175</td><td><span class="badge bd-blue">9router</span></td></tr>
+        <tr><td>2</td><td>"Làm giàu thôi ae 🥲"</td><td>Tôm Hùm</td><td>58,379</td><td>488</td><td>48</td><td><span class="badge bd-teal">Business</span></td></tr>
+        <tr><td>3</td><td>"Sao gemini mất dạy thế nhỉ 🥸"</td><td>Khương Nguyễn</td><td>49,694</td><td>222</td><td>44</td><td><span class="badge bd-violet">Model</span></td></tr>
+        <tr><td>4</td><td>"ChatGPT 5.5 ra mắt, vượt Claude Opus 4.7 trên hầu hết benchmark — đây là những gì cần làm ngay"</td><td>Dat Nguyen</td><td>48,172</td><td>470</td><td>44</td><td><span class="badge bd-violet">Model</span></td></tr>
+        <tr><td>5</td><td>"Cảm ơn ae đã đẩy thuyền, lên top 1 JavaScript trending của GitHub VN 🇻🇳"</td><td>Hoang Anh</td><td>43,911</td><td>672</td><td>104</td><td><span class="badge bd-blue">9router</span></td></tr>
+        <tr><td>6</td><td>"Nếu có API codex không giới hạn, các bác có ý tưởng gì? Community Project :)))"</td><td>Nguyễn Ngọc Hiển</td><td>40,985</td><td>172</td><td>107</td><td><span class="badge bd-green">Showcase</span></td></tr>
+        <tr><td>7</td><td>"1tr1 token codex, 100m token opus — chỉ trong 3 ngày, ae nuôi tôm cỡ lào?"</td><td>Nguyễn Văn</td><td>40,272</td><td>273</td><td>54</td><td><span class="badge bd-coral">Chi phí</span></td></tr>
+        <tr><td>8</td><td>"Từ ngày OpenClaw ra đời thì có hàng tá ideas để startup — SG là tôi!"</td><td>Vinh Nguyen</td><td>40,046</td><td>194</td><td>133</td><td><span class="badge bd-teal">Business</span></td></tr>
+        <tr><td>9</td><td>"OpenClaw có chơi chứng khoán ko mọi người nhỉ :)))"</td><td>Tiến Vượng</td><td>38,193</td><td>166</td><td>48</td><td><span class="badge bd-teal">Business</span></td></tr>
+        <tr><td>10</td><td>"Với 1000 cái tài khoản Gmail thì có thể làm gì với OpenClaw không các bác?"</td><td>Lê Nông</td><td>37,793</td><td>128</td><td>93</td><td><span class="badge bd-coral">Chi phí</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="slabel">Top posts theo reactions & engagement</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--pink)"></span>Top 10 bài — reactions cao nhất</div>
+      <table class="dtable">
+        <thead><tr><th>Tóm tắt bài</th><th>Tác giả</th><th>React</th></tr></thead>
+        <tbody>
+          <tr><td>"Quên OpenClaw đi… 9router + tailscale"</td><td>Vinh Nguyễn</td><td><strong style="color:var(--amber)">1,109</strong></td></tr>
+          <tr><td>"Top 1 JS trending GitHub VN 🇻🇳"</td><td>Hoang Anh</td><td>672</td></tr>
+          <tr><td>"Làm giàu thôi ae 🥲"</td><td>Tôm Hùm</td><td>488</td></tr>
+          <tr><td>"ChatGPT 5.5 ra mắt, đây là những gì cần làm ngay"</td><td>Dat Nguyen</td><td>470</td></tr>
+          <tr><td>"OpenClaw đã làm được gì? Góc flex sản phẩm"</td><td>Anh Tuan Tran</td><td>467</td></tr>
+          <tr><td>"9router RTK token tiết kiệm" (giới thiệu tính năng mới)</td><td>Hoang Anh</td><td>441</td></tr>
+          <tr><td>"Vô hạn quota codex sau 1 ngày mày mò"</td><td>Doãn Anh</td><td>434</td></tr>
+          <tr><td>"Deepseek-v4-pro miễn phí rồi"</td><td>Hung Dc</td><td>417</td></tr>
+          <tr><td>"9remote — remote terminal + desktop trên điện thoại"</td><td>Hoang Anh</td><td>407</td></tr>
+          <tr><td>"Thư ký AI cho Thông tư/Nghị định — tự làm kế hoạch hỗ trợ"</td><td>Dân Rẫy Tây Nguyên</td><td>363</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--teal)"></span>Top 10 bài — comments nhiều nhất</div>
+      <table class="dtable">
+        <thead><tr><th>Tóm tắt bài</th><th>Tác giả</th><th>Cmt</th></tr></thead>
+        <tbody>
+          <tr><td>"Vô hạn quota codex sau 1 ngày mày mò"</td><td>Doãn Anh</td><td><strong style="color:var(--amber)">266</strong></td></tr>
+          <tr><td>"Quên OpenClaw đi… 9router + tailscale"</td><td>Vinh Nguyễn</td><td>175</td></tr>
+          <tr><td>"9router RTK tính năng tiết kiệm token"</td><td>Hoang Anh</td><td>174</td></tr>
+          <tr><td>"Thư ký AI cho công văn nhà nước tự làm kế hoạch"</td><td>Dân Rẫy Tây Nguyên</td><td>149</td></tr>
+          <tr><td>"OpenClaw đã làm được gì? Góc flex sản phẩm"</td><td>Anh Tuan Tran</td><td>141</td></tr>
+          <tr><td>"Ideas startup với OpenClaw, SG là tôi!"</td><td>Vinh Nguyen</td><td>133</td></tr>
+          <tr><td>"Cậu hỏi bán acc gpt gói ở đâu giá tốt"</td><td>Nguyễn Huy Hoàng</td><td>121</td></tr>
+          <tr><td>"9remote — remote terminal toàn diện"</td><td>Hoang Anh</td><td>114</td></tr>
+          <tr><td>"Flex Claw: dẹp bán acc gpt rẻ lậu đi"</td><td>Flex Claw</td><td>110</td></tr>
+          <tr><td>"Setup cài OpenClaw 2 bước, ai không làm được thì đi lao động tay chân"</td><td>Trương Quốc Bảo</td><td>109</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="slabel">Insight từ nội dung top posts — phân tích sâu</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--blue)"></span>5 insight quan trọng nhất từ data</div>
+      <div class="prow">
+        <div class="picon" style="background:var(--fill-amber)">🏆</div>
+        <div>
+          <div class="p-title">Bài #1 viral: "Quên OpenClaw đi — dùng 9router" (287K views)</div>
+          <div class="p-desc">Setup: máy ảo Ubuntu + tailscale + 9router + GPT 5.5 + Claude CLI + Termius trên điện thoại. Bài nhận 1,109 reactions — gấp đôi bài #2. Insight cốt lõi: <strong>người dùng VN tìm giải pháp nhẹ hơn, rẻ hơn OpenClaw thuần</strong>. 9router trở thành middleware không thể thiếu trong stack VN.</div>
+        </div>
+      </div>
+      <div class="prow">
+        <div class="picon" style="background:var(--fill-blue)">🔧</div>
+        <div>
+          <div class="p-title">9router là sản phẩm OSS VN viral nhất trong cộng đồng</div>
+          <div class="p-desc">Hoang Anh (tác giả 9router + 9remote) có tổng 1,754 reactions — cao nhất group. Top 1 JavaScript trending GitHub VN. 9router được nhắc đến trong >40% các bài top. Đây là tool middleware giải quyết đúng pain point của cộng đồng VN: tiết kiệm token, mobile access, multi-model.</div>
+        </div>
+      </div>
+      <div class="prow">
+        <div class="picon" style="background:var(--fill-coral)">💸</div>
+        <div>
+          <div class="p-title">Chi phí/API Key chiếm 32% tổng bài nhưng chỉ 27% tổng views</div>
+          <div class="p-desc">Nhiều bài hỏi mua acc rẻ nhưng engagement thấp hơn bài thực chiến. Bài "setup codex miễn phí" của Doãn Anh: 266 comments nhưng chỉ 18K views — cộng đồng nội bộ thảo luận sâu, không viral ra ngoài. Bài chia sẻ API key Minimax free: 198 comments, 22K views.</div>
+        </div>
+      </div>
+      <div class="prow">
+        <div class="picon" style="background:var(--fill-teal)">📊</div>
+        <div>
+          <div class="p-title">Use Case & Showcase có tỷ lệ engagement/views cao nhất</div>
+          <div class="p-desc">Chỉ 4 bài nhưng avg 216 reactions/bài — cao nhất mọi nhóm. "OpenClaw đã làm được gì?" của Anh Tuan Tran: 467 reactions, 141 comments, 34K views. "Flex sản phẩm" posts kéo thảo luận chất lượng cao hơn bài hỏi đáp thông thường.</div>
+        </div>
+      </div>
+      <div class="prow">
+        <div class="picon" style="background:var(--fill-violet)">🔄</div>
+        <div>
+          <div class="p-title">Hermes đang nổi lên thay thế OpenClaw cho memory</div>
+          <div class="p-desc">Nhiều bài top cuối danh sách nói về chuyển từ OpenClaw → Hermes vì "workspace càng bự càng chậm". Quote hay: <em>"Nếu OpenClaw là Windows thì Hermes là MacOS."</em> Combo mới nổi: Hermes (memory) + 9router (interface) + OpenCode (coding) thay thế OpenClaw thuần.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--amber)"></span>Use case thực tế từ top posts</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="uc-tile"><div class="uc-title">🎥 YouTube automation — từ A đến Z</div><div class="uc-desc">"Từ ngày có OpenClaw, YouTube của mình tiện hơn rất nhiều vì đã có nó làm hết mọi việc, mình chỉ hậu kỳ một tí là xong." 35K views, 277 reactions.</div><div class="uc-who">Phạm Văn Vượng</div></div>
+        <div class="uc-tile"><div class="uc-title">🏛️ Thư ký AI cho văn bản nhà nước</div><div class="uc-desc">Index Thông tư, Nghị định, Công văn → mỗi ngày có công văn mới thì AI tự tạo kế hoạch hỗ trợ. 34.5K views, 363 reactions — use case hành chính công độc đáo nhất.</div><div class="uc-who">Dân Rẫy Tây Nguyên</div></div>
+        <div class="uc-tile"><div class="uc-title">📦 6 shop đa sàn — báo cáo tự động</div><div class="uc-desc">"Mò được con AI này hay phết. Mình có 6 shop mỗi sàn 2 shop, nó báo cáo đẹp. Viết thêm bản lấy dữ liệu tính lợi nhuận nữa là đủ dùng." 16K views.</div><div class="uc-who">Pham Van Thuy</div></div>
+        <div class="uc-tile"><div class="uc-title">📱 Bot Zalo quản lý group 0 token</div><div class="uc-desc">Plugin zalo-mod: tự chào member mới, anti-spam, /warn /report — TẤT CẢ xử lý local, không gọi AI. Chỉ khi @tag mới tốn token. Full guide trong bài. 12K views.</div><div class="uc-who">Ho Le Minh Tuan</div></div>
+        <div class="uc-tile"><div class="uc-title">⚖️ Skill Thuế TNCN tự cập nhật</div><div class="uc-desc">Workflow "Semi-Auto Update": AI quét văn bản pháp luật hàng tháng, phát hiện thay đổi (NĐ 141/2026 tăng ngưỡng miễn thuế lên 1 tỷ), tự cập nhật 14 file reference. Admin chỉ approve. 23K views.</div><div class="uc-who">Minh Đỗ</div></div>
+        <div class="uc-tile"><div class="uc-title">💹 Trading agent đọc kịch bản</div><div class="uc-desc">"Không auto vào lệnh mà giám sát thị trường, đưa kịch bản giao dịch. Đọc phân tích hợp lý thì entry." Finetune model local nhẹ + chạy local. 33K views, 351 reactions.</div><div class="uc-who">Ryan Nguyen Trader</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">Top authors & Phân phối views</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--violet)"></span>Top 10 tác giả — tổng reactions</div>
+      <div class="hbar"><div class="hbar-lbl w160">Hoang Anh (9router)</div><div class="hbar-track"><div class="hbar-fill" style="width:100%;background:var(--blue)"></div></div><div class="hbar-pct">1,754</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Vinh Nguyễn</div><div class="hbar-track"><div class="hbar-fill" style="width:63%;background:var(--amber)"></div></div><div class="hbar-pct">1,109</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Doãn Anh</div><div class="hbar-track"><div class="hbar-fill" style="width:38%;background:var(--teal)"></div></div><div class="hbar-pct">665</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Nguyên Vũ</div><div class="hbar-track"><div class="hbar-fill" style="width:32%;background:var(--violet)"></div></div><div class="hbar-pct">553</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Hung Dc</div><div class="hbar-track"><div class="hbar-fill" style="width:31%;background:var(--coral)"></div></div><div class="hbar-pct">544</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Sử Minh Thành (Founder)</div><div class="hbar-track"><div class="hbar-fill" style="width:30%;background:var(--pink)"></div></div><div class="hbar-pct">532</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Dat Nguyen</div><div class="hbar-track"><div class="hbar-fill" style="width:29%;background:var(--green)"></div></div><div class="hbar-pct">508</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Tôm Hùm</div><div class="hbar-track"><div class="hbar-fill" style="width:28%;background:var(--amber)"></div></div><div class="hbar-pct">488</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Anh Tuan Tran (Admin)</div><div class="hbar-track"><div class="hbar-fill" style="width:27%;background:var(--teal)"></div></div><div class="hbar-pct">467</div></div>
+      <div class="hbar"><div class="hbar-lbl w160">Mai Gia</div><div class="hbar-track"><div class="hbar-fill" style="width:24%;background:var(--violet)"></div></div><div class="hbar-pct">429</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--green)"></span>Phân phối lượt xem & Key observations</div>
+      <div style="margin-bottom:18px;">
+        <div class="card-h" style="font-size:10px;margin-bottom:10px;">Phân phối views của 114 bài</div>
+        <div class="hbar"><div class="hbar-lbl w140">Dưới 10K views</div><div class="hbar-track"><div class="hbar-fill" style="width:79%;background:var(--ink3)"></div></div><div class="hbar-pct">30 bài</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">10K–25K views</div><div class="hbar-track"><div class="hbar-fill" style="width:100%;background:var(--blue)"></div></div><div class="hbar-pct">52 bài</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">25K–50K views</div><div class="hbar-track"><div class="hbar-fill" style="width:79%;background:var(--violet)"></div></div><div class="hbar-pct">30 bài</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">50K–100K views</div><div class="hbar-track"><div class="hbar-fill" style="width:3%;background:var(--amber)"></div></div><div class="hbar-pct">1 bài</div></div>
+        <div class="hbar"><div class="hbar-lbl w140">Trên 100K views</div><div class="hbar-track"><div class="hbar-fill" style="width:3%;background:var(--coral)"></div></div><div class="hbar-pct">1 bài</div></div>
+      </div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text"><strong>Long tail rõ rệt:</strong> 1 bài chiếm 12% tổng views toàn bộ 114 bài. Top 10 bài chiếm 53% tổng views.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--blue)"></div><div class="ins-text"><strong>46% bài rơi vào 10–25K views</strong> — đây là "normal distribution" của group, bài đạt 25K+ là viral với cộng đồng này.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Comments ≠ Views:</strong> Bài nhiều comments nhất (Doãn Anh, 266 cmt) chỉ có 18K views — thảo luận nội bộ sâu, không kéo reach rộng.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text"><strong>Format viral:</strong> Bài "how I saved cost" + bài "flex sản phẩm" + bài "tool mới ra mắt" = 3 format cao engagement nhất.</div></div>
+    </div>
+  </div>
+
+  <div class="slabel">Xu hướng nổi bật từ content top posts</div>
+  <div class="g3">
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--blue)"></span>🔧 Stack phổ biến nhất VN 2026</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--blue)"></div><div class="ins-text"><strong>9router</strong> — middleware VN-made, multi-model, tiết kiệm token, mobile access</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>GPT-5.5 / Codex</strong> — "bộ não" phổ biến nhất, nhiều người tìm cách xài free/giá rẻ</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Hermes Agent</strong> — đang dần thay OC cho long-term memory, workspace lớn</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text"><strong>9remote</strong> — remote terminal toàn diện trên điện thoại, zero setup</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text"><strong>Claude CLI + Tailscale</strong> — combo bảo mật, không cần expose port ra internet</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--coral)"></span>🚨 Pain point lặp lại nhiều nhất</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--coral)"></div><div class="ins-text"><strong>Token đốt nhanh</strong> — "9router tự bào token", "tốn 15$/ngày", "đốt 1tr1 token codex trong 3 ngày"</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text"><strong>Tìm API/acc giá rẻ</strong> — mua acc ChatGPT/Claude, xoay vòng codex free, tìm provider rẻ</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Workspace chậm khi lớn</strong> — OC phản hồi chậm khi workspace nhiều file, chuyển sang Hermes</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--blue)"></div><div class="ins-text"><strong>Task dài bị ngắt</strong> — OC hay dừng báo cáo giữa chừng khi task chạy vài tiếng</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Codex OAuth bị quét/hết hạn</strong> — tài khoản bị deactivate, cần refresh tự động</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="ch-dot" style="background:var(--green)"></span>🌱 Tín hiệu mới — cộng đồng đang hướng đến</div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--green)"></div><div class="ins-text"><strong>Offline meetup lan rộng</strong> — Đà Nẵng đã có 2 meetup, HN và SG đang cần. "Cà phê nuôi tôm" 35K views.</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--blue)"></div><div class="ins-text"><strong>Sản phẩm hoá OpenClaw</strong> — không chỉ dùng mà bắt đầu build trên nó: 9router, Zalo plugin, Thuế TNCN skill</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--amber)"></div><div class="ins-text"><strong>Combo lai ghép</strong> — Hermes + 9router + OpenCode thay dần OpenClaw thuần. "$12-30/tháng là đủ dùng"</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--violet)"></div><div class="ins-text"><strong>Use case chính phủ / hành chính</strong> — văn bản nhà nước, thuế, kế toán — đang nổi tại VN, chưa nhiều nước làm</div></div>
+      <div class="ins-row"><div class="ins-dot" style="background:var(--teal)"></div><div class="ins-text"><strong>Computer Use & Codex</strong> — điều khiển app trên máy tính đang được quan tâm như "bước tiếp theo"</div></div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <strong>Nguồn:</strong> File top_post.xlsx — 114 top posts trong 28 ngày gần nhất của group Facebook OpenClaw VN (852,586,990,732,832). Phân tích: phân loại chủ đề thủ công + thống kê views/reactions/comments. Tháng 5/2026.
+  </div>
+
+</div></div>
+</body>
+</html>
